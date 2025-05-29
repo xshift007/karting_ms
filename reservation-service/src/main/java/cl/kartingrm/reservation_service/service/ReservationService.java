@@ -1,5 +1,8 @@
 package cl.kartingrm.reservation_service.service;
 
+import cl.kartingrm.pricingclient.PricingRequest;
+import cl.kartingrm.pricingclient.PricingResponse;
+
 
 import cl.kartingrm.reservation_service.dto.*;
 import cl.kartingrm.reservation_service.model.Reservation;
