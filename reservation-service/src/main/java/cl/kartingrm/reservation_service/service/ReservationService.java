@@ -20,15 +20,18 @@ public class ReservationService {
 
     private final ReservationRepository repo;
     private final RestTemplate rest;
-    @Value("${pricing.service.url}") String pricingUrl;
 
-    public ReservationResponse create(CreateReservationRequest req){
+    @Value("${pricing.service.url}")           // http://localhost:8081
+    private String pricingUrl;
+
+    public ReservationResponse create(CreateReservationRequest req) {
 
         PricingRequest pricingReq = new PricingRequest(
-                req.laps(), req.participants(), req.clientVisits(),
-                req.birthdayCount(), LocalDate.now());
+                req.laps(), req.participants(),
+                req.clientVisits(), req.birthdayCount(),
+                LocalDate.now());
 
-        PricingResponse pr = rest.postForObject(
+        PricingResponse p = rest.postForObject(
                 pricingUrl + "/api/pricing/calculate",
                 pricingReq, PricingResponse.class);
 
@@ -36,10 +39,9 @@ public class ReservationService {
                 .laps(req.laps())
                 .participants(req.participants())
                 .clientEmail(req.clientEmail())
-                /* precios ya son totales */
-                .basePrice((int) (pr.baseUnit() * req.participants()))
-                .discountPercent((int) pr.totalDiscountPct())
-                .finalPrice(pr.finalPrice())
+                .basePrice((int)(p.baseUnit() * req.participants()))
+                .discountPercent((int) p.totalDiscountPct())
+                .finalPrice(p.finalPrice())         // el servicio ya devuelve total
                 .status("PENDING")
                 .build();
 

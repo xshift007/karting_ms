@@ -11,33 +11,46 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class PricingService {
 
-    private final TariffService  tariff;
-    private final DiscountService discounts;
-    private final ClientService  clients;   // ← sólo si vas a consultar visitas
+    private final TariffConfigRepository tariffs;
+    private final DiscountService disc;
 
     public PricingResponse calculate(PricingRequest dto) {
 
-        TariffConfig cfg = tariff.forDate(dto.sessionDate(), dto.laps());
-        double baseUnit  = cfg.getPrice();
-        int    people    = dto.participants();
+        TariffConfig cfg = tariffs.findByLaps(dto.laps())
+                .orElseThrow(() -> new IllegalArgumentException("Tarifa no encontrada"));
 
-        /* === DESCUENTOS === */
-        double groupPct   = discounts.groupDiscount(people);
-        double freqPct    = discounts.frequentDiscount(dto.clientVisits());
-        int    winners    = discounts.birthdayWinners(people, dto.birthdayCount());
+        double base = cfg.getBasePrice();
+        double groupPct = disc.groupDiscount(dto.participants());
+        double freqPct  = disc.frequentDiscount(dto.clientVisits());
+        int    winners  = disc.birthdayWinners(dto.participants(), dto.birthdayCount());
 
-        /* === PRECIO FINAL (idéntico al monolito) === */
-        double afterGroup = baseUnit * (1 - groupPct/100);
+        // precio después de grupo y frecuencia (solo cambia titular)
+        double afterGroup = base * (1 - groupPct/100);
         double ownerUnit  = afterGroup * (1 - freqPct/100);
-        double others     = afterGroup * (people - 1 - winners)
-                + afterGroup * 0.5 * winners;
-        double finalPrice = Math.round(ownerUnit + others);
+        double regular    = afterGroup;
+
+        // aplicar 50 % a cumpleañeros
+        int winnersLeft = winners;
+        if (winnersLeft > 0) {             // asumimos titular NO cumpleañero
+            ownerUnit *= 0.5;
+            winnersLeft--;
+        }
+        double rest = (dto.participants() - 1 - winnersLeft) * regular
+                + winnersLeft * regular * 0.5;
+
+        int finalTotal = (int) Math.round(ownerUnit + rest);
+        double totalDisc = (base * dto.participants() - finalTotal) * 100
+                / (base * dto.participants());
 
         return new PricingResponse(
-                baseUnit, groupPct, freqPct, winners,
-                cfg.getMinutes(), (int) finalPrice,   /* total */
-                Math.round((1 - finalPrice/(baseUnit*people))*100)
-        );
+                base,
+                groupPct,
+                freqPct,
+                winners,
+                cfg.getMinutes(),
+                finalTotal,
+                totalDisc);
     }
 }
+
 
