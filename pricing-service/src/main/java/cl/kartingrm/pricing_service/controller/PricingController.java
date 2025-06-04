@@ -18,7 +18,8 @@ public class PricingController {
     }
 
     @PostMapping("/calculate")
-    public PricingResponse calculate(@RequestBody PricingRequest req) {
+    public PricingResponse calculate(@RequestBody PricingRequest req){
         return service.calculate(req);
     }
+
 }

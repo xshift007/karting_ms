@@ -2,7 +2,11 @@ package cl.kartingrm.pricing_service.dto;
 
 
 public record PricingResponse(
-        int basePrice,
-        int discountPercent,
-        int finalPrice
+        double baseUnit,
+        double groupPct,
+        double frequentPctOwner,
+        int    birthdayWinners,
+        int    minutes,
+        int    finalPrice,           // TOTAL
+        double totalDiscountPct
 ) {}

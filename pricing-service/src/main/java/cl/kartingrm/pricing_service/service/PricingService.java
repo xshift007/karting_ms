@@ -7,42 +7,37 @@ import cl.kartingrm.pricing_service.repository.TariffConfigRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-@Service @RequiredArgsConstructor
+@Service
+@RequiredArgsConstructor
 public class PricingService {
 
-    private final TariffConfigRepository repo;
+    private final TariffService  tariff;
+    private final DiscountService discounts;
+    private final ClientService  clients;   // ← sólo si vas a consultar visitas
 
-    public PricingResponse calculate(PricingRequest req) {
-        TariffConfig tariff = repo.findByLaps(req.laps())
-                .orElseThrow(() -> new IllegalArgumentException("Tarifa no encontrada"));
+    public PricingResponse calculate(PricingRequest dto) {
 
-        int price = tariff.getBasePrice();
-        // recargo por fin de semana / feriado
-        if (req.weekend() || req.holiday()) price *= 1.10;
+        TariffConfig cfg = tariff.forDate(dto.sessionDate(), dto.laps());
+        double baseUnit  = cfg.getPrice();
+        int    people    = dto.participants();
 
-        // descuento por tamaño de grupo
-        int groupDisc = switch (req.participants()) {
-            case 3,4,5 -> 10;
-            case 6,7,8,9,10 -> 20;
-            case 11,12,13,14,15 -> 30;
-            default -> 0;
-        };
+        /* === DESCUENTOS === */
+        double groupPct   = discounts.groupDiscount(people);
+        double freqPct    = discounts.frequentDiscount(dto.clientVisits());
+        int    winners    = discounts.birthdayWinners(people, dto.birthdayCount());
 
-        // descuento cliente frecuente
-        int visitDisc = switch (req.clientVisits()) {
-            case 2,3,4 -> 10;
-            case 5,6 -> 20;
-            default -> (req.clientVisits() >= 7 ? 30 : 0);
-        };
+        /* === PRECIO FINAL (idéntico al monolito) === */
+        double afterGroup = baseUnit * (1 - groupPct/100);
+        double ownerUnit  = afterGroup * (1 - freqPct/100);
+        double others     = afterGroup * (people - 1 - winners)
+                + afterGroup * 0.5 * winners;
+        double finalPrice = Math.round(ownerUnit + others);
 
-        // descuento cumpleaños (si hay cumpleañeros y grupo cumple la regla)
-        int bdayDisc = (req.birthdayCount() > 0) ? 50 : 0;
-
-        int discount = Math.max(groupDisc, visitDisc);   // se aplicará el mayor
-        discount = Math.max(discount, bdayDisc);
-
-        int finalPrice = (int) Math.round(price * (100 - discount) / 100.0);
-
-        return new PricingResponse(price, discount, finalPrice);
+        return new PricingResponse(
+                baseUnit, groupPct, freqPct, winners,
+                cfg.getMinutes(), (int) finalPrice,   /* total */
+                Math.round((1 - finalPrice/(baseUnit*people))*100)
+        );
     }
 }
+

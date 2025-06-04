@@ -4,25 +4,12 @@ import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
-@Table(
-        name = "tariff_config",
-        uniqueConstraints = @UniqueConstraint(columnNames = "laps")
-)
+@Table(name="tariff_config")
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
 public class TariffConfig {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Id @Enumerated(EnumType.STRING)
+    private RateType id;              // WEEKDAY, WEEKEND, HOLIDAY
 
-    @Column(nullable = false)
-    private int laps;
-
-    @Column(nullable = false)
-    private int minutes;
-
-    @Column(name = "base_price", nullable = false)
-    private int basePrice;
-
-    private boolean weekend;
-    private boolean holiday;
+    private int minutes;              // 10, 15, 20
+    private int price;                // precio unitario CLP
 }

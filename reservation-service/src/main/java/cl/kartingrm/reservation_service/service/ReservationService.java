@@ -12,40 +12,39 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-@Service @RequiredArgsConstructor
+import java.time.LocalDate;
+
+@Service
+@RequiredArgsConstructor
 public class ReservationService {
 
     private final ReservationRepository repo;
-    private final RestTemplate restTemplate = new RestTemplate();
+    private final RestTemplate rest;
+    @Value("${pricing.service.url}") String pricingUrl;
 
-    @Value("${pricing.service.url}")
-    private String pricingUrl;
+    public ReservationResponse create(CreateReservationRequest req){
 
-    public ReservationResponse create(CreateReservationRequest req) {
+        PricingRequest pricingReq = new PricingRequest(
+                req.laps(), req.participants(), req.clientVisits(),
+                req.birthdayCount(), LocalDate.now());
 
-        // 1. Llamar a pricing-service
-        var priceReq = new cl.kartingrm.pricingclient.PricingRequest(
-                req.laps(), req.participants(), req.weekend(),
-                req.holiday(), req.clientVisits(), req.birthdayCount());
+        PricingResponse pr = rest.postForObject(
+                pricingUrl + "/api/pricing/calculate",
+                pricingReq, PricingResponse.class);
 
-        var priceResp = restTemplate.postForObject(
-                pricingUrl + "/calculate",
-                priceReq,
-                cl.kartingrm.pricingclient.PricingResponse.class);
-
-        // 2. Guardar reserva
-        Reservation res = Reservation.builder()
+        Reservation r = Reservation.builder()
                 .laps(req.laps())
                 .participants(req.participants())
                 .clientEmail(req.clientEmail())
-                .basePrice(priceResp.basePrice())
-                .discountPercent(priceResp.discountPercent())
-                .finalPrice(priceResp.finalPrice())
+                /* precios ya son totales */
+                .basePrice((int) (pr.baseUnit() * req.participants()))
+                .discountPercent((int) pr.totalDiscountPct())
+                .finalPrice(pr.finalPrice())
                 .status("PENDING")
                 .build();
 
-        repo.save(res);
-
-        return new ReservationResponse(res.getId(), res.getFinalPrice(), res.getStatus());
+        repo.save(r);
+        return new ReservationResponse(r.getId(), r.getFinalPrice(), r.getStatus());
     }
 }
+
