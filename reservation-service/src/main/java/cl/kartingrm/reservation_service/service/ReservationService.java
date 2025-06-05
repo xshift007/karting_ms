@@ -14,7 +14,6 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
-import java.time.LocalDate;
 
 @Service
 @RequiredArgsConstructor
@@ -38,9 +37,11 @@ public class ReservationService {
     private PricingResponse callPricing(CreateReservationRequest req) {
         try {
             PricingRequest pricingReq = new PricingRequest(
-                    req.laps(), req.participants(),
-                    req.clientVisits(), req.birthdayCount(),
-                    LocalDate.now());
+                    req.laps(),
+                    req.participants(),
+                    req.clientVisits(),
+                    req.birthdayCount(),
+                    req.sessionDate());
 
             return rest.postForObject(
                     pricingUrl + "/api/pricing/calculate",
