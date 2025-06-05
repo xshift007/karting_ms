@@ -13,7 +13,7 @@
 	</parent>
 
 	<groupId>cl.kartingrm</groupId>
-	<artifactId>pricing-service</artifactId>
+	<artifactId>reservation-service</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>reservation-service</name>
 	<description>Servicio reservaciones</description>
