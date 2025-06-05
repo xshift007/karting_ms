@@ -121,6 +121,48 @@ KartingRM es un sistema modular de microservicios para la gestión de reservas e
 * **Calcular Precio**
   `GET /api/pricing?trackId=2&duration=30`
 
+## 🚦 Cómo levantar y probar los servicios
+
+1. **Crear bases de datos MySQL** (solo la primera vez):
+
+   ```sql
+   CREATE DATABASE IF NOT EXISTS pricingdb;
+   CREATE DATABASE IF NOT EXISTS reservationdb;
+   ```
+
+2. **Propiedades relevantes** (`application.properties`):
+
+   * pricing-service
+
+     ```properties
+     spring.datasource.url=jdbc:mysql://localhost:3306/pricingdb?createDatabaseIfNotExist=true&serverTimezone=UTC
+     spring.datasource.username=root
+     spring.datasource.password=password
+     ```
+
+   * reservation-service
+
+     ```properties
+     spring.datasource.url=jdbc:mysql://localhost:3306/reservationdb?createDatabaseIfNotExist=true&serverTimezone=UTC
+     spring.datasource.username=root
+     spring.datasource.password=password
+     pricing.service.url=http://localhost:8081
+     ```
+
+3. **Ejecutar pruebas**
+
+   ```bash
+   cd pricing-service && mvn test
+   cd ../reservation-service && mvn test
+   ```
+
+4. **Levantar cada servicio**
+
+   ```bash
+   cd pricing-service && mvn spring-boot:run
+   cd ../reservation-service && mvn spring-boot:run
+   ```
+
 ## 🔧 Pruebas
 
 * **Backend**:
