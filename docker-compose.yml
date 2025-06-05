@@ -1,0 +1,56 @@
+version: '3.8'
+services:
+  config:
+    build: ./config-server
+    container_name: config
+    volumes:
+      - ./config-repo:/config-repo
+    ports:
+      - "8888:8888"
+
+  discovery:
+    build: ./discovery-server
+    container_name: discovery
+    depends_on:
+      - config
+    ports:
+      - "8761:8761"
+
+  pricing-db:
+    image: mysql:8
+    container_name: pricing-db
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: pricingdb
+    volumes:
+      - pricing-data:/var/lib/mysql
+
+  reservation-db:
+    image: mysql:8
+    container_name: reservation-db
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: reservationdb
+    volumes:
+      - reservation-data:/var/lib/mysql
+
+  pricing:
+    build: ./pricing-service
+    container_name: pricing
+    depends_on:
+      - config
+      - discovery
+      - pricing-db
+
+  reservation:
+    build: ./reservation-service
+    container_name: reservation
+    depends_on:
+      - config
+      - discovery
+      - reservation-db
+      - pricing
+
+volumes:
+  pricing-data:
+  reservation-data:

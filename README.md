@@ -178,6 +178,20 @@ KartingRM es un sistema modular de microservicios para la gestión de reservas e
   npm test
   ```
 
+
+## 🐳 Docker Compose "lista dev"
+
+Para levantar rápidamente los servicios existe el archivo `docker-compose.yml` que genera las imágenes de `pricing`, `reservation`, `config` y `discovery`. Las configuraciones se encuentran en `config-repo/`.
+
+```bash
+docker compose up --build
+```
+
+Revisa todos los servicios con:
+```bash
+docker compose logs -f
+```
+
 ## 🤝 Contribuciones
 
 ¡Bienvenidas! Para contribuir:
