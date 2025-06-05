@@ -19,6 +19,11 @@ services:
       - config
     ports:
       - "8761:8761"
+    healthcheck:
+      test: ["CMD", "curl","-f","http://localhost:8761/actuator/health"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
 
   pricing-db:
     image: mysql:8
@@ -49,6 +54,13 @@ services:
       pricing-db:
         condition: service_started
     restart: on-failure
+    ports:
+      - "8081:0"
+    healthcheck:
+      test: ["CMD", "curl","-f","http://localhost:8081/actuator/health"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
 
   reservation:
     build: ./reservation-service
@@ -63,6 +75,13 @@ services:
       pricing:
         condition: service_started
     restart: on-failure
+    ports:
+      - "8082:0"
+    healthcheck:
+      test: ["CMD", "curl","-f","http://localhost:8082/actuator/health"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
 
 volumes:
   pricing-data:
