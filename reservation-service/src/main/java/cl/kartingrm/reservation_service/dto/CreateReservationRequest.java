@@ -1,11 +1,12 @@
 package cl.kartingrm.reservation_service.dto;
 
+import java.time.LocalDate;
+
 public record CreateReservationRequest(
         int laps,
         int participants,
         String clientEmail,
         int clientVisits,
-        boolean weekend,
-        boolean holiday,
-        int birthdayCount
+        int birthdayCount,
+        LocalDate sessionDate
 ) {}
