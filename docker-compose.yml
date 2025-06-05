@@ -6,6 +6,11 @@ services:
       - ./config-repo:/config-repo
     ports:
       - "8888:8888"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8888/actuator/health"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
 
   discovery:
     build: ./discovery-server
@@ -37,18 +42,27 @@ services:
     build: ./pricing-service
     container_name: pricing
     depends_on:
-      - config
-      - discovery
-      - pricing-db
+      config:
+        condition: service_healthy
+      discovery:
+        condition: service_started
+      pricing-db:
+        condition: service_started
+    restart: on-failure
 
   reservation:
     build: ./reservation-service
     container_name: reservation
     depends_on:
-      - config
-      - discovery
-      - reservation-db
-      - pricing
+      config:
+        condition: service_healthy
+      discovery:
+        condition: service_started
+      reservation-db:
+        condition: service_started
+      pricing:
+        condition: service_started
+    restart: on-failure
 
 volumes:
   pricing-data:
