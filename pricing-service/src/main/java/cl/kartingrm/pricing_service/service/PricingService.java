@@ -3,7 +3,7 @@ package cl.kartingrm.pricing_service.service;
 
 import cl.kartingrm.pricing_service.dto.*;
 import cl.kartingrm.pricing_service.model.TariffConfig;
-import cl.kartingrm.pricing_service.repository.TariffConfigRepository;
+import cl.kartingrm.pricing_service.service.TariffService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -11,13 +11,12 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class PricingService {
 
-    private final TariffConfigRepository tariffs;
+    private final TariffService tariffService;
     private final DiscountService disc;
 
     public PricingResponse calculate(PricingRequest dto) {
 
-        TariffConfig cfg = tariffs.findByLaps(dto.laps())
-                .orElseThrow(() -> new IllegalArgumentException("Tarifa no encontrada"));
+        TariffConfig cfg = tariffService.forDate(dto.sessionDate(), dto.laps());
 
         double base = cfg.getBasePrice();
         double groupPct = disc.groupDiscount(dto.participants());

@@ -1,10 +1,13 @@
--- src/main/resources/data.sql
-
--- 1) Limpio la tabla antes de reinsertar
-TRUNCATE TABLE tariff_config;
-
--- 2) Inserto sólo los 3 registros base
-INSERT INTO tariff_config (laps, minutes, base_price) VALUES
-(10,10,15000),
-(15,15,20000),
-(20,20,25000);
+-- Inserción idempotente: se actualiza base_price si ya existe
+INSERT INTO tariff_config(rate_type,laps,minutes,base_price)
+VALUES
+  ('WEEKDAY',10,10,15000),
+  ('WEEKDAY',15,15,20000),
+  ('WEEKDAY',20,20,25000),
+  ('WEEKEND',10,10,17000),
+  ('WEEKEND',15,15,23000),
+  ('WEEKEND',20,20,28000),
+  ('HOLIDAY',10,10,19000),
+  ('HOLIDAY',15,15,26000),
+  ('HOLIDAY',20,20,31000)
+ON DUPLICATE KEY UPDATE base_price = VALUES(base_price);
