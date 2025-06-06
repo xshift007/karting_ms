@@ -53,11 +53,17 @@
 			<scope>runtime</scope>
 		</dependency>
 
-		<!-- Validación de DTOs -->
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-validation</artifactId>
-		</dependency>
+                <!-- Validación de DTOs -->
+                <dependency>
+                        <groupId>org.springframework.boot</groupId>
+                        <artifactId>spring-boot-starter-validation</artifactId>
+                </dependency>
+
+                <!-- Endpoints de gestión -->
+                <dependency>
+                        <groupId>org.springframework.boot</groupId>
+                        <artifactId>spring-boot-starter-actuator</artifactId>
+                </dependency>
 
 		<!-- Lombok (procesador de anotaciones) -->
                 <dependency>
