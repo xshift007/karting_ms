@@ -7,7 +7,6 @@ import cl.kartingrm.pricingclient.PricingResponse;
 import cl.kartingrm.reservation_service.dto.*;
 import cl.kartingrm.reservation_service.model.Reservation;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -21,8 +20,7 @@ public class ReservationService {
     private final ReservationPersister persister;
     private final RestTemplate rest;
 
-    @Value("${pricing.service.url}")           // http://localhost:8081
-    private String pricingUrl;
+    private static final String PRICING_URL = "http://pricing-service";
 
     public ReservationResponse create(CreateReservationRequest req) {
         PricingResponse p = callPricing(req);
@@ -40,7 +38,7 @@ public class ReservationService {
                     req.sessionDate());
 
             return rest.postForObject(
-                    pricingUrl + "/api/pricing/calculate",
+                    PRICING_URL + "/api/pricing/calculate",
                     pricingReq, PricingResponse.class);
         } catch (org.springframework.web.client.RestClientException ex) {
             throw new IllegalStateException("No se pudo obtener precio del servicio externo", ex);
