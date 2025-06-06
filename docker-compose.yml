@@ -44,6 +44,15 @@ services:
     volumes:
       - reservation-data:/var/lib/mysql
 
+  client-db:
+    image: mysql:8
+    container_name: client-db
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: clientsdb
+    volumes:
+      - client-data:/var/lib/mysql
+
   pricing:
     build: ./pricing-service
     container_name: pricing
@@ -82,6 +91,24 @@ services:
       timeout: 3s
       retries: 5
 
+  client:
+    build: ./client-service
+    container_name: client
+    depends_on:
+      config:
+        condition: service_healthy
+      discovery:
+        condition: service_healthy
+      client-db:
+        condition: service_started
+    restart: on-failure
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+
 volumes:
   pricing-data:
   reservation-data:
+  client-data:
