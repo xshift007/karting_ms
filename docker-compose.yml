@@ -108,6 +108,23 @@ services:
       timeout: 3s
       retries: 5
 
+  gateway:
+    build: ./gateway-service
+    container_name: gateway
+    depends_on:
+      config:
+        condition: service_healthy
+      discovery:
+        condition: service_healthy
+    ports:
+      - "8080:8080"
+    restart: on-failure
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+
 volumes:
   pricing-data:
   reservation-data:
