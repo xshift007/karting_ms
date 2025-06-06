@@ -192,6 +192,40 @@ Revisa todos los servicios con:
 docker compose logs -f
 ```
 
+Comprueba que el registro de servicios está disponible:
+
+```bash
+curl -f http://localhost:8081/actuator/health
+```
+
+### Probar servicios con puertos dinámicos
+
+Los microservicios `pricing` y `reservation` arrancan con `server.port=0`,
+por lo que su puerto cambia en cada ejecución. Puedes invocarlos de dos
+maneras:
+
+1. **Desde otro contenedor**:
+
+   ```bash
+   docker compose exec reservation \
+     curl -s -X POST http://pricing-service/api/pricing/calculate \
+          -H 'Content-Type: application/json' \
+          -d '{"laps":10,"participants":3,"clientVisits":1,"birthdayCount":0,"sessionDate":"2025-06-07"}'
+   ```
+
+   El alias DNS `pricing-service` se resuelve internamente mediante Eureka.
+
+2. **Desde el host** usando `tools/ports.sh` para descubrir la IP y el
+   puerto asignado:
+
+   ```bash
+   ./tools/ports.sh pricing-service
+   # salida de ejemplo: curl http://172.19.0.4:39543/api/pricing/...
+   ```
+
+   Ejecuta el comando mostrado para interactuar con la API desde tu
+   terminal.
+
 ## 🤝 Contribuciones
 
 ¡Bienvenidas! Para contribuir:
