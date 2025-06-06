@@ -21,7 +21,7 @@ services:
     ports:
       - "8761:8761"
     healthcheck:
-      test: ["CMD", "curl","-f","http://localhost:8080/actuator/health"]
+      test: ["CMD", "curl","-f","http://localhost:8081/actuator/health"]
       interval: 5s
       timeout: 3s
       retries: 10
