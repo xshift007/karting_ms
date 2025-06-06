@@ -21,10 +21,12 @@ public class ReservationService {
     private final RestTemplate rest;
 
     private static final String PRICING_URL = "http://pricing-service";
+    private static final String CLIENT_URL = "http://client-service";
 
     public ReservationResponse create(CreateReservationRequest req) {
         PricingResponse p = callPricing(req);
         Reservation saved = persister.save(req, p);
+        rest.postForLocation(CLIENT_URL + "/api/clients/{email}/visits", null, req.clientEmail());
         return new ReservationResponse(saved.getId(), saved.getFinalPrice(), saved.getStatus());
     }
 
@@ -33,7 +35,7 @@ public class ReservationService {
             PricingRequest pricingReq = new PricingRequest(
                     req.laps(),
                     req.participants(),
-                    req.clientVisits(),
+                    req.clientEmail(),
                     req.birthdayCount(),
                     req.sessionDate());
 

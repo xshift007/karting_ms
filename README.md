@@ -210,7 +210,7 @@ maneras:
    docker compose exec reservation \
      curl -s -X POST http://pricing-service/api/pricing/calculate \
           -H 'Content-Type: application/json' \
-          -d '{"laps":10,"participants":3,"clientVisits":1,"birthdayCount":0,"sessionDate":"2025-06-07"}'
+          -d '{"laps":10,"participants":3,"clientEmail":"demo@demo.cl","birthdayCount":0,"sessionDate":"2025-06-07"}'
    ```
 
    El alias DNS `pricing-service` se resuelve internamente mediante Eureka.
