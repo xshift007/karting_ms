@@ -25,13 +25,9 @@ public class ReservationService {
     @Value("${pricing.service.url}")           // http://localhost:8081
     private String pricingUrl;
 
-    @Transactional
     public ReservationResponse create(CreateReservationRequest req) {
-        // 1) Consultar microservicio de precios FUERA de transacción
         PricingResponse p = callPricing(req);
-
-        // 2) Persistir en BD (transacción ACID corta)
-        Reservation saved = saveReservation(req, p);
+        Reservation saved = transactionalSave(req, p);
         return new ReservationResponse(saved.getId(), saved.getFinalPrice(), saved.getStatus());
     }
 
@@ -56,7 +52,8 @@ public class ReservationService {
      * Transacción corta — solo inserción en una tabla local;
      * admite REQUIRES_NEW para no propagar rollback a llamada externa ya realizada.
      */
-    protected Reservation saveReservation(CreateReservationRequest req, PricingResponse p) {
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    protected Reservation transactionalSave(CreateReservationRequest req, PricingResponse p) {
         Reservation r = Reservation.builder()
                 .laps(req.laps())
                 .participants(req.participants())
