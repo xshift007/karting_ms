@@ -1,12 +1,9 @@
 #!/usr/bin/env bash
-get_port() {
-  curl -s "http://localhost:8761/eureka/apps/${1^^}" \
-  | grep -oP '(?<=<port enabled="true">)\d+' | head -1
-}
+EUREKA=http://localhost:8761/eureka
 
-PPORT=$(get_port pricing-service)
-RPORT=$(get_port reservation-service)
+lookup() { curl -s "$EUREKA/apps/${1^^}" | tr -d '\n'; }
+ip()   { lookup "$1" | grep -oP '(?<=<ipAddr>)[^<]+'; }
+port() { lookup "$1" | grep -oP '(?<=<port[^>]*>)[0-9]+'; }
 
-echo "Pricing      :$PPORT"
-echo "Reservation  :$RPORT"
-
+svc=${1:-pricing-service}
+echo "curl http://$(ip $svc):$(port $svc)/api/${svc%-service}/..."
