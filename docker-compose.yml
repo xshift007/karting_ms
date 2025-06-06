@@ -55,6 +55,11 @@ services:
         condition: service_started
     restart: on-failure
     # Expose no fixed port; service registers with Eureka using a random port
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
 
   reservation:
     build: ./reservation-service
@@ -70,6 +75,11 @@ services:
         condition: service_started
     restart: on-failure
     # Expose no fixed port; service registers with Eureka using a random port
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
 
 volumes:
   pricing-data:
