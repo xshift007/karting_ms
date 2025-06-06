@@ -9,7 +9,7 @@ import java.time.LocalDate;
 public record PricingRequest(
         int laps,
         int participants,
-        int clientVisits,
+        String clientEmail,
         int birthdayCount,
         LocalDate sessionDate      // mismo orden que en pricing-service
 ) {}

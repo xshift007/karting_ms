@@ -6,7 +6,6 @@ public record CreateReservationRequest(
         int laps,
         int participants,
         String clientEmail,
-        int clientVisits,
         int birthdayCount,
         LocalDate sessionDate
 ) {}

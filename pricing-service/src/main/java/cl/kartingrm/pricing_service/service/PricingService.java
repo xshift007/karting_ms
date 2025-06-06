@@ -6,6 +6,7 @@ import cl.kartingrm.pricing_service.model.TariffConfig;
 import cl.kartingrm.pricing_service.service.TariffService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 @Service
 @RequiredArgsConstructor
@@ -13,6 +14,7 @@ public class PricingService {
 
     private final TariffService tariffService;
     private final DiscountService disc;
+    private final RestTemplate rest;
 
     public PricingResponse calculate(PricingRequest dto) {
 
@@ -20,7 +22,14 @@ public class PricingService {
 
         double base = cfg.getBasePrice();
         double groupPct = disc.groupDiscount(dto.participants());
-        double freqPct  = disc.frequentDiscount(dto.clientVisits());
+
+        int visits = rest.getForObject(
+                "http://client-service/api/clients/{email}/visits",
+                Integer.class,
+                dto.clientEmail()
+        );
+
+        double freqPct  = disc.frequentDiscount(visits);
         int    winners  = disc.birthdayWinners(dto.participants(), dto.birthdayCount());
 
         // precio después de grupo y frecuencia (solo cambia titular)

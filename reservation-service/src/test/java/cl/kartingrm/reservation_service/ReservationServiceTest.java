@@ -38,10 +38,9 @@ class ReservationServiceTest {
                      "laps": 15,
                      "participants": 4,
                      "clientEmail": "a@b.com",
-                     "clientVisits": 3,
                      "birthdayCount": 0,
                      "sessionDate": "2025-06-07"
-                   }
+                  }
                 """))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(1))
