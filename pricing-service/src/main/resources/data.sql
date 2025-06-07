@@ -10,4 +10,5 @@ VALUES
   ('HOLIDAY',10,10,19000),
   ('HOLIDAY',15,15,26000),
   ('HOLIDAY',20,20,31000)
-ON DUPLICATE KEY UPDATE base_price = VALUES(base_price);
+AS new
+ON DUPLICATE KEY UPDATE base_price = new.base_price;

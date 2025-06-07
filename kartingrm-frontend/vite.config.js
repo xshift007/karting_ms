@@ -9,7 +9,7 @@ export default defineConfig({
     proxy: {
       // Todo lo que empiece con /api lo reenvía al backend
       '/api': {
-        target: process.env.VITE_BACKEND_API_URL || 'http://localhost:8080',
+        target: process.env.VITE_API_BASE_URL || 'http://localhost:8080',
         changeOrigin: true,
         secure: false,
         // Opcional: elimina el prefijo /api en destino

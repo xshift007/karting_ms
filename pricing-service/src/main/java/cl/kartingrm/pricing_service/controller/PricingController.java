@@ -8,14 +8,10 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/pricing")
+@RequiredArgsConstructor
 public class PricingController {
 
     private final PricingService service;
-
-    // Constructor explícito para inyección
-    public PricingController(PricingService service) {
-        this.service = service;
-    }
 
     @PostMapping("/calculate")
     public PricingResponse calculate(@RequestBody PricingRequest req){
