@@ -8,9 +8,9 @@ services:
       - "8888:8888"
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8888/actuator/health"]
-      interval: 5s
-      timeout: 3s
-      retries: 10
+      interval: 10s
+      timeout: 5s
+      retries: 30
 
   discovery:
     build: ./discovery-server
@@ -22,36 +22,53 @@ services:
       - "8761:8761"
     healthcheck:
       test: ["CMD", "curl","-f","http://localhost:8081/actuator/health"]
-      interval: 5s
-      timeout: 3s
-      retries: 10
+      interval: 10s
+      timeout: 5s
+      retries: 30
 
   pricing-db:
-    image: mysql:8
+    image: mysql:8.0.33
     container_name: pricing-db
     environment:
       MYSQL_ROOT_PASSWORD: password
       MYSQL_DATABASE: pricingdb
     volumes:
       - pricing-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-ppassword"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
 
   reservation-db:
-    image: mysql:8
+    image: mysql:8.0.33
     container_name: reservation-db
     environment:
       MYSQL_ROOT_PASSWORD: password
       MYSQL_DATABASE: reservationdb
     volumes:
       - reservation-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-ppassword"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
 
   client-db:
-    image: mysql:8
+    image: mysql:8.0.33
     container_name: client-db
     environment:
       MYSQL_ROOT_PASSWORD: password
       MYSQL_DATABASE: clientsdb
+      DB_USERNAME: root
+      DB_PASSWORD: password
     volumes:
       - client-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-ppassword"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
 
   pricing:
     build: ./pricing-service
@@ -62,14 +79,13 @@ services:
       discovery:
         condition: service_healthy
       pricing-db:
-        condition: service_started
+        condition: service_healthy
     restart: on-failure
-    # Expose no fixed port; service registers with Eureka using a random port
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health"]
+      test: ["CMD", "curl", "-f", "http://localhost:9090/actuator/health"]
       interval: 10s
-      timeout: 3s
-      retries: 5
+      timeout: 5s
+      retries: 30
 
   reservation:
     build: ./reservation-service
@@ -80,33 +96,35 @@ services:
       discovery:
         condition: service_healthy
       reservation-db:
-        condition: service_started
+        condition: service_healthy
       pricing:
-        condition: service_started
+        condition: service_healthy
     restart: on-failure
-    # Expose no fixed port; service registers with Eureka using a random port
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health"]
+      test: ["CMD", "curl", "-f", "http://localhost:9090/actuator/health"]
       interval: 10s
-      timeout: 3s
-      retries: 5
+      timeout: 5s
+      retries: 30
 
   client:
     build: ./client-service
     container_name: client
+    environment:
+      DB_USERNAME: root
+      DB_PASSWORD: password
     depends_on:
       config:
         condition: service_healthy
       discovery:
         condition: service_healthy
       client-db:
-        condition: service_started
+        condition: service_healthy
     restart: on-failure
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health"]
+      test: ["CMD", "curl", "-f", "http://localhost:9090/actuator/health"]
       interval: 10s
-      timeout: 3s
-      retries: 5
+      timeout: 5s
+      retries: 30
 
   gateway:
     build: ./gateway-service
@@ -122,8 +140,16 @@ services:
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health"]
       interval: 10s
-      timeout: 3s
-      retries: 5
+      timeout: 5s
+      retries: 30
+
+  frontend:
+    build: ./kartingrm-frontend
+    container_name: frontend
+    ports:
+      - "5173:80"
+    depends_on:
+      - gateway
 
 volumes:
   pricing-data:
