@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/usr/bin/env bash -e
 # -----------------------------------------------
 #  tools/ports.sh
 #  Muestra el puerto HTTP expuesto por cada micro

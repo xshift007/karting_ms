@@ -72,7 +72,12 @@ KartingRM es un sistema modular de microservicios para la gestión de reservas e
 
    ```bash
    docker-compose up -d --build
-   ```
+```
+
+*Si usas Mac con procesador M-series, agrega `--platform=linux/amd64` al build.*
+
+
+> Solo se exponen al host los puertos 8080 (gateway) y 9091 (Prometheus).
 
 4. Accede a Eureka (Service Registry): [http://localhost:8761](http://localhost:8761)
    > El servidor de descubrimiento se ejecuta de forma independiente
