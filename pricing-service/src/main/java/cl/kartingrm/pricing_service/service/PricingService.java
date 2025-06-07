@@ -16,6 +16,16 @@ public class PricingService {
     private final DiscountService disc;
     private final RestTemplate rest;
 
+    /**
+     * Calcula el precio final de una sesión considerando descuentos por
+     * tamaño de grupo, frecuencia y celebración de cumpleaños.
+     * <p>
+     * Para simplificar el cálculo se asume que el titular de la reserva
+     * nunca es considerado como "cumpleañero" al aplicar el descuento del
+     * 50&nbsp;% correspondiente. Si el titular efectivamente está de
+     * cumpleaños deberá reservar a nombre de otra persona para optar al
+     * beneficio.
+     */
     public PricingResponse calculate(PricingRequest dto) {
 
         TariffConfig cfg = tariffService.forDate(dto.sessionDate(), dto.laps());

@@ -75,6 +75,9 @@ KartingRM es un sistema modular de microservicios para la gestión de reservas e
    ```
 
 4. Accede a Eureka (Service Registry): [http://localhost:8761](http://localhost:8761)
+   > El servidor de descubrimiento se ejecuta de forma independiente
+   > (`register-with-eureka=false`). Si necesitas varias réplicas,
+   > habilita su auto registro y configura los peers en un clúster.
 
 5. Documentación de APIs en Swagger (Gateway): [http://localhost:8080/swagger-ui.html](http://localhost:8080/swagger-ui.html)
 

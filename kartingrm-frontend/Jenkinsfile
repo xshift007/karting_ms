@@ -12,8 +12,13 @@ pipeline {
                     ]]
                 )
                 dir("kartingrm-frontend") {
-                    bat "npm ci"
-                    bat "npm run build"
+                    if (isUnix()) {
+                        sh 'npm ci'
+                        sh 'npm run build'
+                    } else {
+                        bat 'npm ci'
+                        bat 'npm run build'
+                    }
                 }
             }
         }
@@ -23,14 +28,21 @@ pipeline {
               dir("kartingrm-frontend") {
                 script {
                   // <-- named arguments obligatorios
-                  withDockerRegistry([ 
-                    url:      'https://index.docker.io/v1/', 
-                    credentialsId: 'docker-credentials' 
+                  withDockerRegistry([
+                    url:      'https://index.docker.io/v1/',
+                    credentialsId: 'docker-credentials'
                   ]) {
-                    bat "docker build -t xsh1ft/karting-frontend:${env.BUILD_NUMBER} ."
-                    bat "docker push xsh1ft/karting-frontend:${env.BUILD_NUMBER}"
-                    bat "docker tag xsh1ft/karting-frontend:${env.BUILD_NUMBER} xsh1ft/karting-frontend:latest"
-                    bat "docker push xsh1ft/karting-frontend:latest"
+                    if (isUnix()) {
+                        sh "docker build -t xsh1ft/karting-frontend:${env.BUILD_NUMBER} ."
+                        sh "docker push xsh1ft/karting-frontend:${env.BUILD_NUMBER}"
+                        sh "docker tag xsh1ft/karting-frontend:${env.BUILD_NUMBER} xsh1ft/karting-frontend:latest"
+                        sh "docker push xsh1ft/karting-frontend:latest"
+                    } else {
+                        bat "docker build -t xsh1ft/karting-frontend:${env.BUILD_NUMBER} ."
+                        bat "docker push xsh1ft/karting-frontend:${env.BUILD_NUMBER}"
+                        bat "docker tag xsh1ft/karting-frontend:${env.BUILD_NUMBER} xsh1ft/karting-frontend:latest"
+                        bat "docker push xsh1ft/karting-frontend:latest"
+                    }
                   }
                 }
               }

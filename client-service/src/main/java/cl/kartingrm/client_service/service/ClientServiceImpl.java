@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.YearMonth;
 import java.util.List;
 import java.util.Optional;
@@ -25,7 +26,7 @@ public class ClientServiceImpl implements ClientService {
     @Override
     @Transactional
     public Client registerClient(Client clientData) {
-        clientData.setRegisteredAt(LocalDate.now().atStartOfDay());
+        clientData.setRegisteredAt(LocalDateTime.now());
         return clientRepo.save(clientData);
     }
 
