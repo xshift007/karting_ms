@@ -29,13 +29,16 @@ services:
   pricing-db:
     image: mysql:8.0.33
     container_name: pricing-db
+    env_file: .env
     environment:
-      MYSQL_ROOT_PASSWORD: password
       MYSQL_DATABASE: pricingdb
+      MYSQL_USER: ${DB_USERNAME}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+      MYSQL_ROOT_PASSWORD: root_pwd
     volumes:
       - pricing-data:/var/lib/mysql
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-ppassword"]
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-proot_pwd"]
       interval: 10s
       timeout: 5s
       retries: 10
@@ -44,13 +47,16 @@ services:
   reservation-db:
     image: mysql:8.0.33
     container_name: reservation-db
+    env_file: .env
     environment:
-      MYSQL_ROOT_PASSWORD: password
       MYSQL_DATABASE: reservationdb
+      MYSQL_USER: ${DB_USERNAME}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+      MYSQL_ROOT_PASSWORD: root_pwd
     volumes:
       - reservation-data:/var/lib/mysql
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-ppassword"]
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-proot_pwd"]
       interval: 10s
       timeout: 5s
       retries: 10
@@ -59,13 +65,16 @@ services:
   client-db:
     image: mysql:8.0.33
     container_name: client-db
+    env_file: .env
     environment:
-      MYSQL_ROOT_PASSWORD: password
       MYSQL_DATABASE: clientsdb
+      MYSQL_USER: ${DB_USERNAME}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+      MYSQL_ROOT_PASSWORD: root_pwd
     volumes:
       - client-data:/var/lib/mysql
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-ppassword"]
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-proot_pwd"]
       interval: 10s
       timeout: 5s
       retries: 10
@@ -74,6 +83,7 @@ services:
   pricing:
     build: pricing-service
     container_name: pricing
+    env_file: .env
     depends_on:
       config:
         condition: service_healthy
@@ -91,6 +101,7 @@ services:
   reservation:
     build: reservation-service
     container_name: reservation
+    env_file: .env
     depends_on:
       config:
         condition: service_healthy
@@ -128,6 +139,7 @@ services:
   gateway:
     build: gateway-service
     container_name: gateway
+    env_file: .env
     depends_on:
       config:
         condition: service_healthy
@@ -137,7 +149,7 @@ services:
       - "8080:8080"
     restart: on-failure
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health"]
+      test: ["CMD", "curl", "-f", "http://localhost:9090/actuator/health"]
       interval: 10s
       timeout: 5s
       retries: 30
@@ -149,6 +161,14 @@ services:
       - "5173:80"
     depends_on:
       - gateway
+
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    ports: ["9091:9090"]
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
+    restart: unless-stopped
 
 volumes:
   pricing-data:
