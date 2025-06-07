@@ -39,6 +39,7 @@ services:
       interval: 10s
       timeout: 5s
       retries: 10
+      start_period: 20s
 
   reservation-db:
     image: mysql:8.0.33
@@ -53,6 +54,7 @@ services:
       interval: 10s
       timeout: 5s
       retries: 10
+      start_period: 20s
 
   client-db:
     image: mysql:8.0.33
@@ -69,6 +71,7 @@ services:
       interval: 10s
       timeout: 5s
       retries: 10
+      start_period: 20s
 
   pricing:
     build: ./pricing-service

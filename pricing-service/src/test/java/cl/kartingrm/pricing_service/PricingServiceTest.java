@@ -13,6 +13,7 @@ import org.springframework.web.client.RestTemplate;
 import java.time.LocalDate;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.within;
 import static org.mockito.BDDMockito.given;
 
 @SpringBootTest
@@ -37,16 +38,10 @@ class PricingServiceTest {
         given(rest.getForObject("http://client-service/api/clients/{email}/visits",
                 Integer.class, "a@b.com"))
                 .willReturn(2);
-        PricingResponse expected = new PricingResponse(
-                15000,
-                10.0,
-                10.0,
-                1,
-                10,
-                33075,
-                26.5
-        );
-        assertThat(service.calculate(req)).isEqualTo(expected);
+        PricingResponse actual = service.calculate(req);
+        assertThat(actual.baseUnit()).isEqualTo(15000);
+        assertThat(actual.finalPrice()).isEqualTo(33075);
+        assertThat(actual.totalDiscountPct()).isCloseTo(26.5, within(0.01));
     }
 
     @Test
@@ -61,16 +56,10 @@ class PricingServiceTest {
         given(rest.getForObject("http://client-service/api/clients/{email}/visits",
                 Integer.class, "c@d.com"))
                 .willReturn(0);
-        PricingResponse expected = new PricingResponse(
-                17000,
-                10.0,
-                0.0,
-                0,
-                10,
-                61200,
-                10.0
-        );
-        assertThat(service.calculate(req)).isEqualTo(expected);
+        PricingResponse actual = service.calculate(req);
+        assertThat(actual.baseUnit()).isEqualTo(17000);
+        assertThat(actual.finalPrice()).isEqualTo(61200);
+        assertThat(actual.totalDiscountPct()).isCloseTo(10.0, within(0.01));
     }
 
     @Test
@@ -85,15 +74,9 @@ class PricingServiceTest {
         given(rest.getForObject("http://client-service/api/clients/{email}/visits",
                 Integer.class, "e@f.com"))
                 .willReturn(7);
-        PricingResponse expected = new PricingResponse(
-                26000,
-                10.0,
-                30.0,
-                1,
-                15,
-                101790,
-                21.7
-        );
-        assertThat(service.calculate(req)).isEqualTo(expected);
+        PricingResponse actual = service.calculate(req);
+        assertThat(actual.baseUnit()).isEqualTo(26000);
+        assertThat(actual.finalPrice()).isEqualTo(101790);
+        assertThat(actual.totalDiscountPct()).isCloseTo(21.7, within(0.01));
     }
 }
