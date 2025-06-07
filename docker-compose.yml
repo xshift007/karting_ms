@@ -1,6 +1,8 @@
 services:
   config:
-    build: ./config-server
+    build:
+      context: .
+      dockerfile: config-server/Dockerfile
     container_name: config
     volumes:
       - ./config-repo:/config-repo
@@ -13,7 +15,9 @@ services:
       retries: 30
 
   discovery:
-    build: ./discovery-server
+    build:
+      context: .
+      dockerfile: discovery-server/Dockerfile
     container_name: discovery
     depends_on:
       config:
@@ -72,7 +76,9 @@ services:
       start_period: 20s
 
   pricing:
-    build: ./pricing-service
+    build:
+      context: .
+      dockerfile: pricing-service/Dockerfile
     container_name: pricing
     depends_on:
       config:
@@ -89,7 +95,9 @@ services:
       retries: 30
 
   reservation:
-    build: ./reservation-service
+    build:
+      context: .
+      dockerfile: reservation-service/Dockerfile
     container_name: reservation
     depends_on:
       config:
@@ -108,7 +116,9 @@ services:
       retries: 30
 
   client:
-    build: ./client-service
+    build:
+      context: .
+      dockerfile: client-service/Dockerfile
     container_name: client
     environment:
       DB_USERNAME: root
@@ -128,7 +138,9 @@ services:
       retries: 30
 
   gateway:
-    build: ./gateway-service
+    build:
+      context: .
+      dockerfile: gateway-service/Dockerfile
     container_name: gateway
     depends_on:
       config:
