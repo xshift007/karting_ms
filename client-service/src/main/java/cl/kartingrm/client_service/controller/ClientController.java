@@ -41,6 +41,12 @@ public class ClientController {
         return ResponseEntity.ok(count);
     }
 
+    @PostMapping("/{email}/visits")
+    public ResponseEntity<Void> addVisit(@PathVariable String email) {
+        clientService.registerVisit(email);
+        return ResponseEntity.ok().build();
+    }
+
     @GetMapping
     public ResponseEntity<List<Client>> getAllClients() {
         return ResponseEntity.ok(clientService.getAllClients());
