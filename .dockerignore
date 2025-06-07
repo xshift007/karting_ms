@@ -1,2 +1,6 @@
 .git
-**/target/
+**/target
+**/node_modules
+**/.mvn/wrapper
+.idea
+.vscode
