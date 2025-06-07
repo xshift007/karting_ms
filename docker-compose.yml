@@ -62,8 +62,6 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: password
       MYSQL_DATABASE: clientsdb
-      DB_USERNAME: root
-      DB_PASSWORD: password
     volumes:
       - client-data:/var/lib/mysql
     healthcheck:

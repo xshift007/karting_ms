@@ -15,14 +15,13 @@ get_port() {
   if command -v jq &>/dev/null; then
     curl -sf -H "Accept: application/json" \
          "${EUREKA}/apps/${APP}" \
-    | jq -r '.application.instance[0].port."$"' 2>/dev/null
+    | jq -r '.application.instance[] | select(.status=="UP") | "\(.ipAddr):\(.port.\"$\")"' 2>/dev/null
     return
   fi
 
   # ---------- intento 2: XML + grep ----------
   curl -sf "${EUREKA}/apps/${APP}" \
-  | grep -oP '(?<=<port[^>]*>)[0-9]+' \
-  | head -n1
+  | awk -v RS='</instance>' '/<status>UP<\/status>/{if(match($0,/<ipAddr>([^<]+)/,ip)&&match($0,/<port[^>]*>([0-9]+)/,port))print ip[1]":"port[1]}'
 }
 
 PPORT=$(get_port pricing-service)
