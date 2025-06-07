@@ -7,3 +7,6 @@ scrape_configs:
           - 'reservation:9090'
           - 'client:9090'
           - 'gateway:9090'
+          - 'config:9090'
+          - 'discovery:9090'
+
