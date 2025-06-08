@@ -2,19 +2,30 @@
 FROM maven:3.9.9-eclipse-temurin-17 AS build
 WORKDIR /app
 
-# 1. Copy only the pom.xml to leverage Docker cache
-COPY pom.xml .
-RUN --mount=type=cache,target=/root/.m2,sharing=locked \
-    mvn -B dependency:go-offline
+# ---------- 1. pom.xml para caché ----------
+COPY pom.xml .                       # raíz
+COPY config-server/pom.xml         config-server/
+COPY discovery-server/pom.xml      discovery-server/
+COPY gateway-service/pom.xml       gateway-service/
+COPY client-service/pom.xml        client-service/
+COPY pricing-service/pom.xml       pricing-service/
+COPY reservation-service/pom.xml   reservation-service/
 
-# 2. Copy the rest of the source code
-COPY src src
 RUN --mount=type=cache,target=/root/.m2,sharing=locked \
-    mvn -B package -DskipTests
+    mvn -B -q dependency:go-offline
 
-# Final stage: create a minimal JRE-based image
+# ---------- 2. código fuente ----------
+COPY . .
+
+ARG MODULE_NAME
+RUN --mount=type=cache,target=/root/.m2,sharing=locked \
+    mvn -B -q -pl ${MODULE_NAME} -am clean package -DskipTests
+
+# ---------- 3. imagen final ----------
 FROM eclipse-temurin:17-jre
 WORKDIR /app
-COPY --from=build /app/target/*.jar app.jar
+ARG MODULE_NAME
+COPY --from=build /app/${MODULE_NAME}/target/*.jar app.jar
 ENV JAVA_TOOL_OPTIONS="-XX:+UseContainerSupport -XX:MaxRAMPercentage=60 -XX:+UseSerialGC"
-ENTRYPOINT ["java","-jar","/app/app.jar"]
+EXPOSE 8080 9090
+ENTRYPOINT ["java","-jar","app.jar"]
