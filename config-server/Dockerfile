@@ -2,14 +2,13 @@
 FROM maven:3.9.9-eclipse-temurin-17 AS build
 WORKDIR /app
 
-COPY .mvn/ .mvn
-COPY mvnw pom.xml ./
+COPY pom.xml .
 RUN --mount=type=cache,target=/root/.m2,sharing=locked \
-    ./mvnw -B dependency:go-offline
+    mvn -B dependency:go-offline
 
 COPY src src
 RUN --mount=type=cache,target=/root/.m2,sharing=locked \
-    ./mvnw -B package -DskipTests
+    mvn -B package -DskipTests
 
 FROM eclipse-temurin:17-jre
 WORKDIR /app
