@@ -8,13 +8,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
 
 import java.time.LocalDate;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.within;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.*;
 
 @SpringBootTest
 @ActiveProfiles("test")
@@ -24,7 +26,18 @@ class PricingServiceTest {
     PricingService service;
 
     @MockBean
-    RestTemplate rest;
+    WebClient web;
+
+    private void mockVisits(String email, int count) {
+        WebClient.RequestHeadersUriSpec<?> uriSpec = mock(WebClient.RequestHeadersUriSpec.class);
+        WebClient.RequestHeadersSpec<?> headersSpec = mock(WebClient.RequestHeadersSpec.class);
+        WebClient.ResponseSpec respSpec = mock(WebClient.ResponseSpec.class);
+
+        given(web.get()).willReturn(uriSpec);
+        given(uriSpec.uri("http://client-service/api/clients/{email}/visits", email)).willReturn(headersSpec);
+        given(headersSpec.retrieve()).willReturn(respSpec);
+        given(respSpec.bodyToMono(Integer.class)).willReturn(Mono.just(count));
+    }
 
     @Test
     void weekdayCalculation_withDiscounts() {
@@ -35,9 +48,7 @@ class PricingServiceTest {
                 1,  // birthday count
                 LocalDate.of(2025,6,4)  // Wednesday
         );
-        given(rest.getForObject("http://client-service/api/clients/{email}/visits",
-                Integer.class, "a@b.com"))
-                .willReturn(2);
+        mockVisits("a@b.com", 2);
         PricingResponse actual = service.calculate(req);
         assertThat(actual.baseUnit()).isEqualTo(15000);
         assertThat(actual.finalPrice()).isEqualTo(33075);
@@ -53,9 +64,7 @@ class PricingServiceTest {
                 0,
                 LocalDate.of(2025,6,7) // Saturday
         );
-        given(rest.getForObject("http://client-service/api/clients/{email}/visits",
-                Integer.class, "c@d.com"))
-                .willReturn(0);
+        mockVisits("c@d.com", 0);
         PricingResponse actual = service.calculate(req);
         assertThat(actual.baseUnit()).isEqualTo(17000);
         assertThat(actual.finalPrice()).isEqualTo(61200);
@@ -71,9 +80,7 @@ class PricingServiceTest {
                 2,
                 LocalDate.of(2025,9,18) // Holiday
         );
-        given(rest.getForObject("http://client-service/api/clients/{email}/visits",
-                Integer.class, "e@f.com"))
-                .willReturn(7);
+        mockVisits("e@f.com", 7);
         PricingResponse actual = service.calculate(req);
         assertThat(actual.baseUnit()).isEqualTo(26000);
         assertThat(actual.finalPrice()).isEqualTo(101790);

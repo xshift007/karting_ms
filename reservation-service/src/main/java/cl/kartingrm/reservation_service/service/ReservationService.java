@@ -8,7 +8,8 @@ import cl.kartingrm.reservation_service.dto.*;
 import cl.kartingrm.reservation_service.model.Reservation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
 
 import cl.kartingrm.reservation_service.service.ReservationPersister;
 
@@ -18,7 +19,7 @@ import cl.kartingrm.reservation_service.service.ReservationPersister;
 public class ReservationService {
 
     private final ReservationPersister persister;
-    private final RestTemplate rest;
+    private final WebClient web;
 
     private static final String PRICING_URL = "http://pricing-service";
     private static final String CLIENT_URL = "http://client-service";
@@ -26,7 +27,12 @@ public class ReservationService {
     public ReservationResponse create(CreateReservationRequest req) {
         PricingResponse p = callPricing(req);
         Reservation saved = persister.save(req, p);
-        rest.postForLocation(CLIENT_URL + "/api/clients/{email}/visits", null, req.clientEmail());
+        web.post()
+                .uri(CLIENT_URL + "/api/clients/{email}/visits", req.clientEmail())
+                .retrieve()
+                .toBodilessEntity()
+                .retry(3)
+                .block();
         return new ReservationResponse(saved.getId(), saved.getFinalPrice(), saved.getStatus());
     }
 
@@ -39,10 +45,13 @@ public class ReservationService {
                     req.birthdayCount(),
                     req.sessionDate());
 
-            return rest.postForObject(
-                    PRICING_URL + "/api/pricing/calculate",
-                    pricingReq, PricingResponse.class);
-        } catch (org.springframework.web.client.RestClientException ex) {
+            return web.post()
+                    .uri(PRICING_URL + "/api/pricing/calculate")
+                    .bodyValue(pricingReq)
+                    .retrieve()
+                    .bodyToMono(PricingResponse.class)
+                    .block();
+        } catch (org.springframework.web.reactive.function.client.WebClientResponseException ex) {
             throw new IllegalStateException("No se pudo obtener precio del servicio externo", ex);
         }
     }

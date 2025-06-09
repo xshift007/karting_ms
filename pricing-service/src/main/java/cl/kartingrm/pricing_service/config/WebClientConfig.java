@@ -1,17 +1,16 @@
 package cl.kartingrm.pricing_service.config;
 
-import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.web.reactive.function.client.WebClient;
 
 @Configuration
-public class RestConfig {
+public class WebClientConfig {
 
     @Bean
     @LoadBalanced
-    public RestTemplate restTemplate(RestTemplateBuilder builder) {
+    public WebClient webClient(WebClient.Builder builder) {
         return builder.build();
     }
 }
