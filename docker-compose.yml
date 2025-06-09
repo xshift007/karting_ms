@@ -88,6 +88,25 @@ services:
       retries: 10
       start_period: 20s
 
+  # MySQL de sesiones
+  session-db:
+    image: mysql:8.0.33
+    container_name: session-db
+    env_file: .env
+    environment:
+      MYSQL_DATABASE: sessiondb
+      MYSQL_USER: ${DB_USERNAME}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+      MYSQL_ROOT_PASSWORD: root_pwd
+    volumes:
+      - session-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-proot_pwd"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
+
   pricing:
     build:
       context: .
@@ -174,6 +193,31 @@ services:
       timeout: 5s
       retries: 30
 
+  # microservicio sesiones
+  session:
+    build:
+      context: .
+      dockerfile: session-service/Dockerfile
+      args: { MODULE_NAME: session-service }
+    container_name: session
+    env_file: .env
+    environment:
+      - SPRING_CONFIG_IMPORT=configserver:http://config:8888
+      - SPRING_CLOUD_CONFIG_RETRY_INITIAL_INTERVAL=1000
+      - SPRING_CLOUD_CONFIG_RETRY_MULTIPLIER=1.5
+      - SPRING_CLOUD_CONFIG_RETRY_MAX_INTERVAL=20000
+      - SPRING_CLOUD_CONFIG_RETRY_MAX_ATTEMPTS=6
+    depends_on:
+      config: { condition: service_healthy }
+      discovery: { condition: service_healthy }
+      session-db: { condition: service_healthy }
+    restart: on-failure
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9090/actuator/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 30
+
   gateway:
     build:
       context: .
@@ -228,3 +272,4 @@ volumes:
   pricing-data:
   reservation-data:
   client-data:
+  session-data:

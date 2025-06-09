@@ -6,6 +6,7 @@ scrape_configs:
           - 'pricing:9090'
           - 'reservation:9090'
           - 'client:9090'
+          - 'session:9090'
           - 'gateway:9090'
           - 'config:9090'
           - 'discovery:9090'
