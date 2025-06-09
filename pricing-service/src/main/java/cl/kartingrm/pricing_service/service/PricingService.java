@@ -6,7 +6,7 @@ import cl.kartingrm.pricing_service.model.TariffConfig;
 import cl.kartingrm.pricing_service.service.TariffService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.web.reactive.function.client.WebClient;
 
 @Service
 @RequiredArgsConstructor
@@ -14,7 +14,7 @@ public class PricingService {
 
     private final TariffService tariffService;
     private final DiscountService disc;
-    private final RestTemplate rest;
+    private final WebClient web;
 
     /**
      * Calcula el precio final de una sesión considerando descuentos por
@@ -33,11 +33,11 @@ public class PricingService {
         double base = cfg.getBasePrice();
         double groupPct = disc.groupDiscount(dto.participants());
 
-        int visits = rest.getForObject(
-                "http://client-service/api/clients/{email}/visits",
-                Integer.class,
-                dto.clientEmail()
-        );
+        int visits = web.get()
+                .uri("http://client-service/api/clients/{email}/visits", dto.clientEmail())
+                .retrieve()
+                .bodyToMono(Integer.class)
+                .block();
 
         double freqPct  = disc.frequentDiscount(visits);
         int    winners  = disc.birthdayWinners(dto.participants(), dto.birthdayCount());

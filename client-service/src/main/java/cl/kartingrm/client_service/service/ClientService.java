@@ -10,5 +10,12 @@ public interface ClientService {
     Optional<Client> findByEmail(String email);
     int countVisitsThisMonth(String email);
     List<Client> getAllClients();
-    void registerVisit(String email);
+    /**
+     * Registra una visita para el cliente indicado.
+     *
+     * @param email correo del cliente
+     * @return {@code true} si el cliente existe y la visita fue registrada,
+     *         {@code false} en caso contrario
+     */
+    boolean registerVisit(String email);
 }

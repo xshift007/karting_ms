@@ -43,7 +43,10 @@ public class ClientController {
 
     @PostMapping("/{email}/visits")
     public ResponseEntity<Void> addVisit(@PathVariable String email) {
-        clientService.registerVisit(email);
+        boolean ok = clientService.registerVisit(email);
+        if (!ok) {
+            return ResponseEntity.notFound().build();
+        }
         return ResponseEntity.ok().build();
     }
 

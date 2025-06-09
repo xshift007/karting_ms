@@ -48,4 +48,20 @@ class ClientControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().string("3"));
     }
+
+    @Test
+    void add_visit_not_found() throws Exception {
+        given(service.registerVisit("missing@ex.com")).willReturn(false);
+
+        mvc.perform(post("/api/clients/missing@ex.com/visits"))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void add_visit_ok() throws Exception {
+        given(service.registerVisit("a@b.com")).willReturn(true);
+
+        mvc.perform(post("/api/clients/a@b.com/visits"))
+                .andExpect(status().isOk());
+    }
 }

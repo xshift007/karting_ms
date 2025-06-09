@@ -58,15 +58,17 @@ public class ClientServiceImpl implements ClientService {
 
     @Override
     @Transactional
-    public void registerVisit(String email) {
+    public boolean registerVisit(String email) {
         Optional<Client> opt = clientRepo.findByEmail(email);
-        if (opt.isPresent()) {
-            Client client = opt.get();
-            Visit visit = Visit.builder()
-                    .client(client)
-                    .visitDate(LocalDate.now())
-                    .build();
-            visitRepo.save(visit);
+        if (opt.isEmpty()) {
+            return false;
         }
+        Client client = opt.get();
+        Visit visit = Visit.builder()
+                .client(client)
+                .visitDate(LocalDate.now())
+                .build();
+        visitRepo.save(visit);
+        return true;
     }
 }

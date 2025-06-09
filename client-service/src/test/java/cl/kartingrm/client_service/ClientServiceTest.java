@@ -51,4 +51,18 @@ class ClientServiceTest {
         int count = clientService.countVisitsThisMonth("b@c.com");
         assertThat(count).isEqualTo(2);
     }
+
+    @Test
+    void register_visit_returns_false_when_client_missing() {
+        boolean result = clientService.registerVisit("nouser@ex.com");
+        assertThat(result).isFalse();
+    }
+
+    @Test
+    void register_visit_persists_when_client_exists() {
+        clientService.registerClient(Client.builder().email("c@d.com").name("Carl").build());
+        boolean result = clientService.registerVisit("c@d.com");
+        assertThat(result).isTrue();
+        assertThat(clientService.countVisitsThisMonth("c@d.com")).isEqualTo(1);
+    }
 }
