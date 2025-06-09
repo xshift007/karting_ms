@@ -96,6 +96,12 @@ services:
         MODULE_NAME: pricing-service
     container_name: pricing
     env_file: .env
+    environment:
+      - SPRING_CONFIG_IMPORT=configserver:http://config:8888
+      - SPRING_CLOUD_CONFIG_RETRY_INITIAL_INTERVAL=1000
+      - SPRING_CLOUD_CONFIG_RETRY_MULTIPLIER=1.5
+      - SPRING_CLOUD_CONFIG_RETRY_MAX_INTERVAL=20000
+      - SPRING_CLOUD_CONFIG_RETRY_MAX_ATTEMPTS=6
     depends_on:
       config:
         condition: service_healthy
@@ -118,6 +124,12 @@ services:
         MODULE_NAME: reservation-service
     container_name: reservation
     env_file: .env
+    environment:
+      - SPRING_CONFIG_IMPORT=configserver:http://config:8888
+      - SPRING_CLOUD_CONFIG_RETRY_INITIAL_INTERVAL=1000
+      - SPRING_CLOUD_CONFIG_RETRY_MULTIPLIER=1.5
+      - SPRING_CLOUD_CONFIG_RETRY_MAX_INTERVAL=20000
+      - SPRING_CLOUD_CONFIG_RETRY_MAX_ATTEMPTS=6
     depends_on:
       config:
         condition: service_healthy
@@ -142,6 +154,12 @@ services:
         MODULE_NAME: client-service
     container_name: client
     env_file: .env
+    environment:
+      - SPRING_CONFIG_IMPORT=configserver:http://config:8888
+      - SPRING_CLOUD_CONFIG_RETRY_INITIAL_INTERVAL=1000
+      - SPRING_CLOUD_CONFIG_RETRY_MULTIPLIER=1.5
+      - SPRING_CLOUD_CONFIG_RETRY_MAX_INTERVAL=20000
+      - SPRING_CLOUD_CONFIG_RETRY_MAX_ATTEMPTS=6
     depends_on:
       config:
         condition: service_healthy
@@ -164,6 +182,12 @@ services:
         MODULE_NAME: gateway-service
     container_name: gateway
     env_file: .env
+    environment:
+      - SPRING_CONFIG_IMPORT=configserver:http://config:8888
+      - SPRING_CLOUD_CONFIG_RETRY_INITIAL_INTERVAL=1000
+      - SPRING_CLOUD_CONFIG_RETRY_MULTIPLIER=1.5
+      - SPRING_CLOUD_CONFIG_RETRY_MAX_INTERVAL=20000
+      - SPRING_CLOUD_CONFIG_RETRY_MAX_ATTEMPTS=6
     depends_on:
       config:
         condition: service_healthy
