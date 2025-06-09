@@ -29,13 +29,19 @@ class PricingServiceTest {
     WebClient web;
 
     private void mockVisits(String email, int count) {
-        WebClient.RequestHeadersUriSpec<?> uriSpec = mock(WebClient.RequestHeadersUriSpec.class);
-        WebClient.RequestHeadersSpec<?> headersSpec = mock(WebClient.RequestHeadersSpec.class);
+        // ---------- mocks "raw" (sin genéricos) -----------
+        @SuppressWarnings("rawtypes")
+        WebClient.RequestHeadersUriSpec uriSpec = mock(WebClient.RequestHeadersUriSpec.class);
+        @SuppressWarnings("rawtypes")
+        WebClient.RequestHeadersSpec headersSpec = mock(WebClient.RequestHeadersSpec.class);
         WebClient.ResponseSpec respSpec = mock(WebClient.ResponseSpec.class);
 
-        when(web.get()).thenReturn(uriSpec);
-        when(uriSpec.uri("http://client-service/api/clients/{email}/visits", email)).thenReturn(headersSpec);
-        when(headersSpec.retrieve()).thenReturn(respSpec);
+        /*  ⚠️  hacemos los casts para que el compilador no capture generics distintos  */
+        when(web.get()).thenReturn(uriSpec);                           // get() → UriSpec
+        when(uriSpec.uri(
+                "http://client-service/api/clients/{email}/visits",
+                email)).thenReturn(headersSpec);                      // uri(...) → HeadersSpec
+        when(headersSpec.retrieve()).thenReturn(respSpec);             // retrieve() → ResponseSpec
         when(respSpec.bodyToMono(Integer.class)).thenReturn(Mono.just(count));
     }
 

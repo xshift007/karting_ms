@@ -19,7 +19,7 @@ COPY . .
 
 ARG MODULE_NAME
 RUN --mount=type=cache,target=/root/.m2,sharing=locked \
-    mvn -B -q -pl ${MODULE_NAME} -am clean package -DskipTests
+    mvn -B -q -pl ${MODULE_NAME} -am clean package -DskipTests -Dmaven.test.skip=true
 
 # ---------- 3. imagen final ----------
 FROM eclipse-temurin:17-jre
