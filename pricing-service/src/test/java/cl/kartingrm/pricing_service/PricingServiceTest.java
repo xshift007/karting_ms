@@ -15,8 +15,8 @@ import java.time.LocalDate;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.within;
-import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.when;
 
 @SpringBootTest
 @ActiveProfiles("test")
@@ -33,10 +33,10 @@ class PricingServiceTest {
         WebClient.RequestHeadersSpec<?> headersSpec = mock(WebClient.RequestHeadersSpec.class);
         WebClient.ResponseSpec respSpec = mock(WebClient.ResponseSpec.class);
 
-        given(web.get()).willReturn(uriSpec);
-        given(uriSpec.uri("http://client-service/api/clients/{email}/visits", email)).willReturn(headersSpec);
-        given(headersSpec.retrieve()).willReturn(respSpec);
-        given(respSpec.bodyToMono(Integer.class)).willReturn(Mono.just(count));
+        when(web.get()).thenReturn(uriSpec);
+        when(uriSpec.uri("http://client-service/api/clients/{email}/visits", email)).thenReturn(headersSpec);
+        when(headersSpec.retrieve()).thenReturn(respSpec);
+        when(respSpec.bodyToMono(Integer.class)).thenReturn(Mono.just(count));
     }
 
     @Test
