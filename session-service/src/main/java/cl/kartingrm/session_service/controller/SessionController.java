@@ -23,6 +23,16 @@ public class SessionController {
     @PostMapping
     public Session save(@RequestBody Session x) { return s.save(x); }
 
+    @PutMapping("/{id}")
+    public Session update(@PathVariable Long id, @RequestBody Session x) {
+        return s.update(id, x);
+    }
+
+    @DeleteMapping("/{id}")
+    public void delete(@PathVariable Long id) {
+        s.delete(id);
+    }
+
     /** Registro de participantes tras crear una reserva */
     @PutMapping("/{id}/register")
     public void add(@PathVariable Long id, @RequestParam int n){

@@ -6,6 +6,8 @@ import cl.kartingrm.pricingclient.PricingResponse;
 
 import cl.kartingrm.reservation_service.dto.*;
 import cl.kartingrm.reservation_service.model.Reservation;
+import cl.kartingrm.reservation_service.model.ReservationStatus;
+import cl.kartingrm.reservation_service.repository.ReservationRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -19,10 +21,12 @@ import cl.kartingrm.reservation_service.service.ReservationPersister;
 public class ReservationService {
 
     private final ReservationPersister persister;
+    private final ReservationRepository repo;
     private final WebClient web;
 
-    private static final String PRICING_URL = "http://pricing-service";
-    private static final String CLIENT_URL = "http://client-service";
+    private static final String PRICING_URL = "lb://PRICING-SERVICE";
+    private static final String CLIENT_URL = "lb://CLIENT-SERVICE";
+    private static final String SESSION_URL = "lb://SESSION-SERVICE";
 
     public ReservationResponse create(CreateReservationRequest req) {
         PricingResponse p = callPricing(req);
@@ -33,7 +37,26 @@ public class ReservationService {
                 .toBodilessEntity()
                 .retry(3)
                 .block();
+
+        web.put()
+                .uri(SESSION_URL + "/api/sessions/{id}/register?n={n}", saved.getId(), req.participants())
+                .retrieve()
+                .toBodilessEntity()
+                .retry(3)
+                .block();
+
         return new ReservationResponse(saved.getId(), saved.getFinalPrice(), saved.getStatus());
+    }
+
+    public java.util.List<Reservation> all() {
+        return repo.findAll();
+    }
+
+    public Reservation cancel(Long id) {
+        Reservation r = repo.findById(id)
+                .orElseThrow(() -> new java.util.NoSuchElementException("reservation " + id));
+        r.setStatus(ReservationStatus.CANCELLED);
+        return repo.save(r);
     }
 
     private PricingResponse callPricing(CreateReservationRequest req) {

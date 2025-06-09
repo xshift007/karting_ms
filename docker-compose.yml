@@ -240,6 +240,8 @@ services:
     ports:
       - "8080:8080"
     restart: on-failure
+    # Health endpoint listens on the management port defined in
+    # config-repo/gateway-service.properties
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:9090/actuator/health"]
       interval: 10s

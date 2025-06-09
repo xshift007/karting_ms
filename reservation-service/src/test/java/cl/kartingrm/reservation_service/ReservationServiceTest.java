@@ -15,6 +15,7 @@ import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(controllers = ReservationController.class)
@@ -49,5 +50,17 @@ class ReservationServiceTest {
                 .andExpect(jsonPath("$.status").value("PENDING"));
 
         then(service).should().create(any());
+    }
+
+    @Test
+    void cancel_reservation() throws Exception {
+        given(service.cancel(eq(5L)))
+                .willReturn(new cl.kartingrm.reservation_service.model.Reservation(5L,10,2,"a@b.com",1000,0,1000, ReservationStatus.CANCELLED));
+
+        mvc.perform(patch("/api/reservations/5/cancel"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value("CANCELLED"));
+
+        then(service).should().cancel(5L);
     }
 }
