@@ -31,11 +31,15 @@ public class Session {
 
     private Integer capacity;
 
+    @Version
+    private Long version;
+
     /** Inscritos actuales */
-    private Integer participants = 0;
+    @com.fasterxml.jackson.annotation.JsonProperty("participantsCount")
+    private Integer participantsCount = 0;
 
     /** evita negativos / overflow */
     public void addParticipants(int n) {
-        this.participants = Math.min(capacity, this.participants + n);
+        this.participantsCount = Math.min(capacity, this.participantsCount + n);
     }
 }

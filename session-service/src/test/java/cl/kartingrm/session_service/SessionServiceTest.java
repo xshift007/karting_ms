@@ -25,6 +25,6 @@ class SessionServiceTest {
                 .endTime(LocalTime.of(14,15))
                 .capacity(10).build());
         svc.register(s.getId(), 12);
-        assertThat(svc.all().get(0).getParticipants()).isEqualTo(10);
+        assertThat(svc.all().get(0).getParticipantsCount()).isEqualTo(10);
     }
 }

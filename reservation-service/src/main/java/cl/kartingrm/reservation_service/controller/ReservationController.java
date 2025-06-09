@@ -17,4 +17,13 @@ public class ReservationController {
     public ReservationResponse create(@RequestBody CreateReservationRequest req) {
         return service.create(req);
     }
+
+    @GetMapping
+    public java.util.List<?> list() { return service.all(); }
+
+    @PatchMapping("/{id}/cancel")
+    public ReservationResponse cancel(@PathVariable Long id) {
+        var r = service.cancel(id);
+        return new ReservationResponse(r.getId(), r.getFinalPrice(), r.getStatus());
+    }
 }

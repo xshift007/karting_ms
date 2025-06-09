@@ -24,6 +24,15 @@ public class SessionService {
     public Session save(Session s) { return repo.save(s); }
 
     @Transactional
+    public Session update(Long id, Session dto) {
+        dto.setId(id);
+        return repo.save(dto);
+    }
+
+    @Transactional
+    public void delete(Long id) { repo.deleteById(id); }
+
+    @Transactional
     public void register(Long id, int n) {
         Session s = repo.findById(id)
                         .orElseThrow(() -> new NoSuchElementException("session " + id));
