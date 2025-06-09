@@ -1,0 +1,4 @@
+# This ConfigMap should be generated with:
+# kubectl create configmap config-repo --from-file=config-repo/ \
+#        --dry-run=client -o yaml > k8s/config-repo-cm.yaml
+# The resulting YAML will include each *.properties file as a key.

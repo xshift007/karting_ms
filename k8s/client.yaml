@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata: {name: client-service}
+spec:
+  selector: {matchLabels: {app: client-service}}
+  template:
+    metadata: {labels: {app: client-service}}
+    spec:
+      containers:
+      - name: client
+        image: client-service:latest
+        envFrom: [{secretRef:{name: db-cred}}]
+        env:
+        - {name: SPRING_CONFIG_IMPORT, value: "configserver:http://config:8888"}
+        ports:
+        - {containerPort: 8080}
+        - {containerPort: 9090}
+        readinessProbe:
+          httpGet: {path: /actuator/health, port: 9090}
+          initialDelaySeconds: 10
+          periodSeconds: 10
+---
+apiVersion: v1
+kind: Service
+metadata: {name: client-service}
+spec:
+  ports: [{port: 8080}]
+  selector: {app: client-service}

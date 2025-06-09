@@ -1,0 +1,43 @@
+apiVersion: v1
+kind: Secret
+metadata: {name: mysql-reservation-secret}
+type: Opaque
+stringData:
+  MYSQL_ROOT_PASSWORD: root_pwd
+  MYSQL_PASSWORD: kartingpwd
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata: {name: mysql-reservation-pvc}
+spec:
+  accessModes: [ReadWriteOnce]
+  resources: {requests: {storage: 1Gi}}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata: {name: reservation-db}
+spec:
+  strategy: {type: Recreate}
+  selector: {matchLabels: {app: reservation-db}}
+  template:
+    metadata: {labels: {app: reservation-db}}
+    spec:
+      containers:
+      - name: mysql
+        image: mysql:8.0.33
+        envFrom: [{secretRef: {name: mysql-reservation-secret}}]
+        env:
+        - {name: MYSQL_DATABASE, value: reservationdb}
+        - {name: MYSQL_USER, value: karting}
+        ports: [{containerPort: 3306}]
+        volumeMounts: [{name: data, mountPath: /var/lib/mysql}]
+      volumes:
+      - name: data
+        persistentVolumeClaim: {claimName: mysql-reservation-pvc}
+---
+apiVersion: v1
+kind: Service
+metadata: {name: reservation-db}
+spec:
+  ports: [{port: 3306}]
+  selector: {app: reservation-db}

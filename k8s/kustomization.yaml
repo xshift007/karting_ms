@@ -1,0 +1,20 @@
+resources:
+- infra.yaml
+- frontend.yaml
+- mysql-client.yaml
+- mysql-pricing.yaml
+- mysql-reservation.yaml
+- mysql-session.yaml
+- client.yaml
+- pricing.yaml
+- reservation.yaml
+- session.yaml
+- secrets.yaml
+- config-repo-cm.yaml
+configMapGenerator: []
+secretGenerator:
+- name: db-cred
+  literals:
+  - DB_USERNAME=karting
+  - DB_PASSWORD=kartingpwd
+  generatorOptions: {disableNameSuffixHash: true}
