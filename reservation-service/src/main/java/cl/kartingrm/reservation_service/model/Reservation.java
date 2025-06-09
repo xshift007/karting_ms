@@ -18,5 +18,6 @@ public class Reservation {
     private int discountPercent;
     private int finalPrice;
 
-    private String status;  // PENDING, PAID, CANCELLED…
+    @Enumerated(EnumType.STRING)
+    private ReservationStatus status;
 }
