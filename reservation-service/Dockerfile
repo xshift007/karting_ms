@@ -3,7 +3,7 @@ FROM maven:3.9.9-eclipse-temurin-17 AS build
 WORKDIR /app
 
 # ---------- 1. pom.xml para caché ----------
-COPY pom.xml .                       # raíz
+COPY pom.xml .
 COPY config-server/pom.xml         config-server/
 COPY discovery-server/pom.xml      discovery-server/
 COPY gateway-service/pom.xml       gateway-service/
