@@ -12,9 +12,3 @@ resources:
 - secrets.yaml
 - config-repo-cm.yaml
 configMapGenerator: []
-secretGenerator:
-- name: db-cred
-  literals:
-  - DB_USERNAME=karting
-  - DB_PASSWORD=kartingpwd
-  generatorOptions: {disableNameSuffixHash: true}

@@ -12,7 +12,6 @@ spec:
         envFrom: [{secretRef:{name: db-cred}}]
         env:
         - {name: SPRING_CONFIG_IMPORT, value: "configserver:http://config:8888"}
-        - {name: SERVER_PORT,          value: "8080"}
         ports:
         - {containerPort: 8080}
         - {containerPort: 9090}
