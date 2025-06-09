@@ -39,7 +39,7 @@ public class ReservationService {
                 .block();
 
         web.put()
-                .uri(SESSION_URL + "/api/sessions/{id}/register?n={n}", saved.getId(), req.participants())
+                .uri(SESSION_URL + "/api/sessions/{id}/register?n={n}", req.sessionId(), req.participants())
                 .retrieve()
                 .toBodilessEntity()
                 .retry(3)

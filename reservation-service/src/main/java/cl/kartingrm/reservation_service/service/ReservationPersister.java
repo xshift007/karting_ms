@@ -20,6 +20,7 @@ public class ReservationPersister {
         Reservation r = Reservation.builder()
                 .laps(req.laps())
                 .participants(req.participants())
+                .sessionId(req.sessionId())
                 .clientEmail(req.clientEmail())
                 .basePrice((int) (p.baseUnit() * req.participants()))
                 .discountPercent((int) p.totalDiscountPct())
