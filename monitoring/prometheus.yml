@@ -3,10 +3,10 @@ scrape_configs:
     metrics_path: '/actuator/prometheus'
     static_configs:
       - targets:
-          - 'pricing:9090'
-          - 'reservation:9090'
-          - 'client:9090'
-          - 'session:9090'
+          - 'pricing-service:9090'
+          - 'reservation-service:9090'
+          - 'client-service:9090'
+          - 'session-service:9090'
           - 'gateway:9090'
           - 'config:9090'
           - 'discovery:9090'
