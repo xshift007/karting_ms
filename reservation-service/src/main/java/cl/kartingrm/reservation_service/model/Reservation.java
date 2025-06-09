@@ -12,6 +12,7 @@ public class Reservation {
 
     private int laps;
     private int participants;
+    private Long sessionId;
     private String clientEmail;
 
     private int basePrice;
