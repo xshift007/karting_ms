@@ -3,6 +3,7 @@ package cl.kartingrm.reservation_service.service;
 import cl.kartingrm.pricingclient.PricingResponse;
 import cl.kartingrm.reservation_service.dto.CreateReservationRequest;
 import cl.kartingrm.reservation_service.model.Reservation;
+import cl.kartingrm.reservation_service.model.ReservationStatus;
 import cl.kartingrm.reservation_service.repository.ReservationRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -23,7 +24,7 @@ public class ReservationPersister {
                 .basePrice((int) (p.baseUnit() * req.participants()))
                 .discountPercent((int) p.totalDiscountPct())
                 .finalPrice(p.finalPrice())
-                .status("PENDING")
+                .status(ReservationStatus.PENDING)
                 .build();
         return repo.save(r);
     }

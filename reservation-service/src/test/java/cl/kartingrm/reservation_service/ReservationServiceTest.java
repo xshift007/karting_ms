@@ -3,6 +3,7 @@ package cl.kartingrm.reservation_service;
 import cl.kartingrm.reservation_service.controller.ReservationController;
 import cl.kartingrm.reservation_service.dto.ReservationResponse;
 import cl.kartingrm.reservation_service.service.ReservationService;
+import cl.kartingrm.reservation_service.model.ReservationStatus;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -28,7 +29,7 @@ class ReservationServiceTest {
 
         // 1) simulamos la lógica completa dentro del propio servicio
         given(service.create(any())).willReturn(
-                new ReservationResponse(1L, 70200, "PENDING")
+                new ReservationResponse(1L, 70200, ReservationStatus.PENDING)
         );
 
         mvc.perform(post("/api/reservations")
