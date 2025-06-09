@@ -10,6 +10,7 @@ COPY gateway-service/pom.xml       gateway-service/
 COPY client-service/pom.xml        client-service/
 COPY pricing-service/pom.xml       pricing-service/
 COPY reservation-service/pom.xml   reservation-service/
+COPY session-service/pom.xml       session-service/
 
 RUN --mount=type=cache,target=/root/.m2,sharing=locked \
     mvn -B -q dependency:go-offline
