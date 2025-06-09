@@ -1,0 +1,43 @@
+apiVersion: v1
+kind: Secret
+metadata: {name: mysql-pricing-secret}
+type: Opaque
+stringData:
+  MYSQL_ROOT_PASSWORD: root_pwd
+  MYSQL_PASSWORD: kartingpwd
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata: {name: mysql-pricing-pvc}
+spec:
+  accessModes: [ReadWriteOnce]
+  resources: {requests: {storage: 1Gi}}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata: {name: pricing-db}
+spec:
+  strategy: {type: Recreate}
+  selector: {matchLabels: {app: pricing-db}}
+  template:
+    metadata: {labels: {app: pricing-db}}
+    spec:
+      containers:
+      - name: mysql
+        image: mysql:8.0.33
+        envFrom: [{secretRef: {name: mysql-pricing-secret}}]
+        env:
+        - {name: MYSQL_DATABASE, value: pricingdb}
+        - {name: MYSQL_USER, value: karting}
+        ports: [{containerPort: 3306}]
+        volumeMounts: [{name: data, mountPath: /var/lib/mysql}]
+      volumes:
+      - name: data
+        persistentVolumeClaim: {claimName: mysql-pricing-pvc}
+---
+apiVersion: v1
+kind: Service
+metadata: {name: pricing-db}
+spec:
+  ports: [{port: 3306}]
+  selector: {app: pricing-db}
