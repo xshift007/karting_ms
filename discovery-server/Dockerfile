@@ -27,5 +27,5 @@ WORKDIR /app
 ARG MODULE_NAME
 COPY --from=build /app/${MODULE_NAME}/target/${MODULE_NAME}-*.jar app.jar
 ENV JAVA_TOOL_OPTIONS="-XX:+UseContainerSupport -XX:MaxRAMPercentage=60 -XX:+UseSerialGC"
-EXPOSE 9090
+EXPOSE 8080 9090
 ENTRYPOINT ["java","-jar","app.jar"]
