@@ -1,7 +1,7 @@
 apiVersion: v1
 data:
   client-service.properties: |
-    spring.datasource.url=jdbc:mysql://client-db:3306/clientsdb?serverTimezone=UTC&useSSL=false
+    spring.datasource.url=jdbc:mysql://client-db:3306/clientsdb?serverTimezone=UTC&useSSL=false&allowPublicKeyRetrieval=true
     spring.datasource.username=${DB_USERNAME}
     spring.datasource.password=${DB_PASSWORD}
     spring.jpa.defer-datasource-initialization=true
@@ -41,7 +41,7 @@ data:
     spring.cloud.gateway.routes[4].predicates[0]=Path=/api/tariffs/**
 
     eureka.client.service-url.defaultZone=http://discovery:8761/eureka/
-    management.endpoints.web.exposure.include=health,info,prometheus
+    management.endpoints.web.exposure.include=health,info,prometheus,gateway
     management.metrics.tags.application=${spring.application.name}
     management.endpoint.health.show-details=always
     management.server.port=9090
@@ -49,7 +49,7 @@ data:
     management.zipkin.tracing.endpoint=http://zipkin:9411/api/v2/spans
   pricing-service.properties: |
     server.port=8080
-    spring.datasource.url=jdbc:mysql://pricing-db:3306/pricingdb?createDatabaseIfNotExist=true&serverTimezone=UTC
+    spring.datasource.url=jdbc:mysql://pricing-db:3306/pricingdb?createDatabaseIfNotExist=true&serverTimezone=UTC&allowPublicKeyRetrieval=true
     spring.datasource.username=${DB_USERNAME}
     spring.datasource.password=${DB_PASSWORD}
     spring.sql.init.mode=always
@@ -65,7 +65,7 @@ data:
     management.zipkin.tracing.endpoint=http://zipkin:9411/api/v2/spans
   reservation-service.properties: |
     server.port=8080
-    spring.datasource.url=jdbc:mysql://reservation-db:3306/reservationdb?createDatabaseIfNotExist=true&serverTimezone=UTC
+    spring.datasource.url=jdbc:mysql://reservation-db:3306/reservationdb?createDatabaseIfNotExist=true&serverTimezone=UTC&allowPublicKeyRetrieval=true
     spring.datasource.username=${DB_USERNAME}
     spring.datasource.password=${DB_PASSWORD}
     spring.jpa.hibernate.ddl-auto=update
@@ -78,7 +78,7 @@ data:
     management.tracing.sampling.probability=1.0
     management.zipkin.tracing.endpoint=http://zipkin:9411/api/v2/spans
   session-service.properties: |
-    spring.datasource.url=jdbc:mysql://session-db:3306/sessiondb?createDatabaseIfNotExist=true&serverTimezone=UTC
+    spring.datasource.url=jdbc:mysql://session-db:3306/sessiondb?createDatabaseIfNotExist=true&serverTimezone=UTC&allowPublicKeyRetrieval=true
     spring.datasource.username=${DB_USERNAME}
     spring.datasource.password=${DB_PASSWORD}
 
