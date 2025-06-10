@@ -29,6 +29,10 @@ spec:
         env:
         - {name: MYSQL_DATABASE, value: clientsdb}
         - {name: MYSQL_USER, value: karting}
+        - {name: TZ, value: America/Santiago}
+        - {name: LANG, value: en_US.utf8}
+        - {name: CHARACTER_SET_SERVER, value: utf8mb4}
+        - {name: COLLATION_SERVER, value: utf8mb4_unicode_ci}
         ports: [{containerPort: 3306}]
         volumeMounts: [{name: data, mountPath: /var/lib/mysql}]
       volumes:
