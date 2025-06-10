@@ -45,6 +45,10 @@ services:
       MYSQL_USER: ${DB_USERNAME}
       MYSQL_PASSWORD: ${DB_PASSWORD}
       MYSQL_ROOT_PASSWORD: root_pwd
+      TZ: America/Santiago
+      LANG: en_US.utf8
+      CHARACTER_SET_SERVER: utf8mb4
+      COLLATION_SERVER: utf8mb4_unicode_ci
     volumes:
       - pricing-data:/var/lib/mysql
     healthcheck:
@@ -63,6 +67,10 @@ services:
       MYSQL_USER: ${DB_USERNAME}
       MYSQL_PASSWORD: ${DB_PASSWORD}
       MYSQL_ROOT_PASSWORD: root_pwd
+      TZ: America/Santiago
+      LANG: en_US.utf8
+      CHARACTER_SET_SERVER: utf8mb4
+      COLLATION_SERVER: utf8mb4_unicode_ci
     volumes:
       - reservation-data:/var/lib/mysql
     healthcheck:
@@ -81,6 +89,10 @@ services:
       MYSQL_USER: ${DB_USERNAME}
       MYSQL_PASSWORD: ${DB_PASSWORD}
       MYSQL_ROOT_PASSWORD: root_pwd
+      TZ: America/Santiago
+      LANG: en_US.utf8
+      CHARACTER_SET_SERVER: utf8mb4
+      COLLATION_SERVER: utf8mb4_unicode_ci
     volumes:
       - client-data:/var/lib/mysql
     healthcheck:
@@ -100,6 +112,10 @@ services:
       MYSQL_USER: ${DB_USERNAME}
       MYSQL_PASSWORD: ${DB_PASSWORD}
       MYSQL_ROOT_PASSWORD: root_pwd
+      TZ: America/Santiago
+      LANG: en_US.utf8
+      CHARACTER_SET_SERVER: utf8mb4
+      COLLATION_SERVER: utf8mb4_unicode_ci
     volumes:
       - session-data:/var/lib/mysql
     healthcheck:

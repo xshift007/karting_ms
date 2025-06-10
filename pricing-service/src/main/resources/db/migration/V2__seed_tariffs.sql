@@ -1,4 +1,3 @@
--- Inserción idempotente: se actualiza base_price si ya existe
 INSERT INTO tariff_config(rate_type,laps,minutes,base_price)
 VALUES
   ('WEEKDAY',10,10,15000),

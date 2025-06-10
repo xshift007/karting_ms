@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS tariff_config(
+CREATE TABLE tariff_config(
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     rate_type VARCHAR(10) NOT NULL,
     laps INT NOT NULL,
