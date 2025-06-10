@@ -41,6 +41,14 @@ class ClientControllerTest {
     }
 
     @Test
+    void create_client_missing_name_bad_request() throws Exception {
+        mvc.perform(post("/api/clients")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\"email\":\"x@x.com\"}"))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
     void get_visits_count() throws Exception {
         given(service.countVisitsThisMonth(eq("b@c.com"))).willReturn(3);
 

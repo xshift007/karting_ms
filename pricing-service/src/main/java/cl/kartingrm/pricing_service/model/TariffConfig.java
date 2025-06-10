@@ -21,7 +21,7 @@ public class TariffConfig {
 
     /** WEEKDAY / WEEKEND / HOLIDAY */
     @Enumerated(EnumType.STRING)
-    @Column(name = "rate_type", length = 10, nullable = false)
+    @Column(name = "rate_type", length = 8, nullable = false)
     private RateType rateType;
 
     private int laps;      // == minutes (simplificación)

@@ -1,5 +1,6 @@
 package cl.kartingrm.client_service.model;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -8,6 +9,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "clients")
+@JsonInclude(JsonInclude.Include.NON_NULL)
 @Getter
 @Setter
 @NoArgsConstructor
@@ -26,6 +28,7 @@ public class Client {
 
     private String phone;
 
+    @Column(nullable = false, updatable = false)
     private LocalDateTime registeredAt;
 
     @OneToMany(mappedBy = "client", cascade = CascadeType.ALL, orphanRemoval = true)

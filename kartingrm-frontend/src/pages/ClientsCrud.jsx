@@ -8,7 +8,7 @@ export default function ClientsCrud() {
   const [rows, setRows] = useState([])
   const [open, setOpen] = useState(false)
   const [edit, setEdit] = useState(null)
-  const [form, setForm] = useState({ fullName:'', email:'', phone:'', birthDate:''/*, adress:''*/ })
+  const [form, setForm] = useState({ name:'', email:'', phone:'', birthDate:''/*, adress:''*/ })
 
   /* ---------- carga inicial con AbortController ---------- */
   useEffect(() => {
@@ -35,14 +35,14 @@ export default function ClientsCrud() {
   const handleSave = async () => {
     try {
       if (edit) {
-        await clientService.update(edit.id, form)
+        await clientService.update(edit.id, { email: form.email, name: form.name, phone: form.phone })
       } else {
-        await clientService.create(form)
+        await clientService.create({ email: form.email, name: form.name, phone: form.phone })
       }
       await reload()
       setOpen(false)
       setEdit(null)
-      setForm({ fullName:'', email:'', phone:'', birthDate:'',/* adress:'' */})
+      setForm({ name:'', email:'', phone:'', birthDate:'',/* adress:'' */})
     } catch (e) {
       console.error(e)
     }
@@ -60,7 +60,7 @@ export default function ClientsCrud() {
           rows={rows}
           columns={[
             { field:'id',        headerName:'ID',        width:70 },
-            { field:'fullName',  headerName:'Nombre',    width:200 },
+            { field:'name',      headerName:'Nombre',    width:200 },
             { field:'email',     headerName:'Email',     width:200 },
             { field:'phone',     headerName:'Teléfono',  width:150 },
             { field:'birthDate', headerName:'Nacimiento',width:130 },
@@ -87,8 +87,8 @@ export default function ClientsCrud() {
       <Dialog open={open} onClose={() => setOpen(false)}>
         <Paper sx={{ p:3, width:400 }}>
           <Stack spacing={2}>
-            <TextField label="Nombre"     value={form.fullName}
-              onChange={e=>setForm({ ...form, fullName:e.target.value })}/>
+            <TextField label="Nombre"     value={form.name}
+              onChange={e=>setForm({ ...form, name:e.target.value })}/>
             <TextField label="Email"      value={form.email}
               onChange={e=>setForm({ ...form, email:e.target.value })}/>
             <TextField label="Teléfono"   value={form.phone}
