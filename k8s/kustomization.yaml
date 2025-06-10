@@ -9,6 +9,8 @@ resources:
 - pricing.yaml
 - reservation.yaml
 - session.yaml
+- payment.yaml
+- report.yaml
 - secrets.yaml
 - config-repo-cm.yaml
 configMapGenerator: []
