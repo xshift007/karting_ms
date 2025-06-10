@@ -8,7 +8,8 @@ spec:
     spec:
       containers:
       - name: pricing
-        image: myrepo/pricing-service:1.0
+        image: pricing-service:latest
+        imagePullPolicy: Never
         envFrom: [{secretRef:{name: db-credentials}}]
         env:
         - {name: SPRING_CONFIG_IMPORT, value: "configserver:http://config:8888"}
