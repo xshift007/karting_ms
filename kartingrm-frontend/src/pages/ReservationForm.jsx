@@ -81,7 +81,7 @@ export default function ReservationForm(){
   const rateType    = watch('rateType')
 
   /* ---------- mapas precio / duración ---------- */
-  const { priceMap, durMap } = useMemo(
+  const { priceMap, durMap, lapsMap } = useMemo(
     () => buildTariffMaps(tariffs),
     [tariffs]
   )
@@ -133,10 +133,12 @@ export default function ReservationForm(){
   },[startTime, rateType, sessionDate, durMap, setValue])
 
   /* ---------- envío ---------- */
-  const onSubmit = data =>
-    reservationService.create(data)
+  const onSubmit = data => {
+    const payload = { ...data, laps: lapsMap[data.rateType] }
+    reservationService.create(payload)
       .then(res => navigate(`/payments/${res.id}`, { replace:true }))
       .catch(e  => alert(e.response?.data?.message || e.message))
+  }
 
   /* ---------- resumen ---------- */
   const summary = useMemo(() => {

@@ -6,11 +6,15 @@
 export function buildTariffMaps(tariffs = []) {
   const priceMap = {}
   const durMap   = {}
+  const lapsMap  = {}
+
   tariffs.forEach(t => {
     priceMap[t.rate] = t.price
     durMap[t.rate]   = t.minutes
+    lapsMap[t.rate]  = t.laps ?? t.minutes
   })
-  return { priceMap, durMap }
+
+  return { priceMap, durMap, lapsMap }
 }
 
 /**
