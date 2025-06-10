@@ -236,6 +236,58 @@ services:
       timeout: 5s
       retries: 30
 
+  payment:
+    build:
+      context: .
+      dockerfile: payment-service/Dockerfile
+      args:
+        MODULE_NAME: payment-service
+    container_name: payment
+    env_file: .env
+    environment:
+      - SPRING_CONFIG_IMPORT=configserver:http://config:8888
+      - SPRING_CLOUD_CONFIG_RETRY_INITIAL_INTERVAL=1000
+      - SPRING_CLOUD_CONFIG_RETRY_MULTIPLIER=1.5
+      - SPRING_CLOUD_CONFIG_RETRY_MAX_INTERVAL=20000
+      - SPRING_CLOUD_CONFIG_RETRY_MAX_ATTEMPTS=6
+    depends_on:
+      config:
+        condition: service_healthy
+      discovery:
+        condition: service_healthy
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9090/actuator/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 30
+
+  report:
+    build:
+      context: .
+      dockerfile: report-service/Dockerfile
+      args:
+        MODULE_NAME: report-service
+    container_name: report
+    env_file: .env
+    environment:
+      - SPRING_CONFIG_IMPORT=configserver:http://config:8888
+      - SPRING_CLOUD_CONFIG_RETRY_INITIAL_INTERVAL=1000
+      - SPRING_CLOUD_CONFIG_RETRY_MULTIPLIER=1.5
+      - SPRING_CLOUD_CONFIG_RETRY_MAX_INTERVAL=20000
+      - SPRING_CLOUD_CONFIG_RETRY_MAX_ATTEMPTS=6
+    depends_on:
+      config:
+        condition: service_healthy
+      discovery:
+        condition: service_healthy
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9090/actuator/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 30
+
   gateway:
     build:
       context: .
