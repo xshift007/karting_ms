@@ -1,6 +1,7 @@
 package cl.kartingrm.client_service.model;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -32,5 +33,6 @@ public class Client {
     private LocalDateTime registeredAt;
 
     @OneToMany(mappedBy = "client", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
     private List<Visit> visits;
 }
