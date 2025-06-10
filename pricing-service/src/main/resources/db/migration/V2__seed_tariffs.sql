@@ -1,4 +1,4 @@
-INSERT INTO tariff_config(rate_type,laps,minutes,base_price)
+INSERT INTO tariff_config(rate_type,laps,minutes,price)
 VALUES
   ('WEEKDAY',10,10,15000),
   ('WEEKDAY',15,15,20000),
@@ -9,4 +9,4 @@ VALUES
   ('HOLIDAY',10,10,19000),
   ('HOLIDAY',15,15,26000),
   ('HOLIDAY',20,20,31000)
-ON DUPLICATE KEY UPDATE base_price = VALUES(base_price);
+ON DUPLICATE KEY UPDATE price = VALUES(price);

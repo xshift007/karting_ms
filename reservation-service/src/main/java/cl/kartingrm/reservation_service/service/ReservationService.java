@@ -8,6 +8,7 @@ import cl.kartingrm.reservation_service.dto.*;
 import cl.kartingrm.reservation_service.model.Reservation;
 import cl.kartingrm.reservation_service.model.ReservationStatus;
 import cl.kartingrm.reservation_service.repository.ReservationRepository;
+import cl.kartingrm.reservation_service.mapper.ReservationMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -23,6 +24,7 @@ public class ReservationService {
     private final ReservationPersister persister;
     private final ReservationRepository repo;
     private final WebClient web;
+    private final ReservationMapper mapper;
 
     private static final String PRICING_URL = "lb://PRICING-SERVICE";
     private static final String CLIENT_URL = "lb://CLIENT-SERVICE";
@@ -45,11 +47,11 @@ public class ReservationService {
                 .retry(3)
                 .block();
 
-        return new ReservationResponse(saved.getId(), saved.getFinalPrice(), saved.getStatus());
+        return mapper.toDto(saved);
     }
 
-    public java.util.List<Reservation> all() {
-        return repo.findAll();
+    public java.util.List<ReservationResponse> all() {
+        return repo.findAll().stream().map(mapper::toDto).toList();
     }
 
     public Reservation cancel(Long id) {

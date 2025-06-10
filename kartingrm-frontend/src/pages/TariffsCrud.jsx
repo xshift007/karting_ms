@@ -10,7 +10,7 @@ export default function TariffsCrud(){
   useEffect(()=>{ tariffSvc.list().then(setRows) },[])
 
   const processRowUpdate = async (newRow) => {
-    await tariffSvc.update(newRow.rateType, newRow)
+    await tariffSvc.update(newRow.rate, newRow)
     return newRow
   }
 
@@ -19,11 +19,11 @@ export default function TariffsCrud(){
       <DataGrid
         rows={rows}
         columns={[
-          {field:'rateType',     headerName:'Tarifa',   width:130, editable:false},
-          {field:'basePrice',    headerName:'Precio',   width:130, editable:true, type:'number'},
+          {field:'rate',     headerName:'Tarifa',   width:130, editable:false},
+          {field:'price',    headerName:'Precio',   width:130, editable:true, type:'number'},
           {field:'minutes',  headerName:'Minutos',  width:130, editable:true, type:'number'}
         ]}
-        getRowId={r=>r.rateType}
+        getRowId={r=>r.rate}
         processRowUpdate={processRowUpdate}
         experimentalFeatures={{ newEditingApi: true }}
         autoHeight

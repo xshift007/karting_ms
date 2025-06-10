@@ -14,14 +14,14 @@ public class TariffService {
     private final TariffConfigRepository repo;
     private final HolidayService holidays;
 
-    public TariffConfig forDate(LocalDate date, int laps) {
+    public TariffConfig forDate(LocalDate date, int minutes) {
         RateType type;
         if (holidays.isHoliday(date)) type = RateType.HOLIDAY;
         else if (date.getDayOfWeek().getValue() >= 6) type = RateType.WEEKEND;
         else type = RateType.WEEKDAY;
 
-        return repo.findByRateTypeAndLaps(type, laps)
+        return repo.findByRateAndMinutes(type, minutes)
                 .orElseThrow(() -> new IllegalArgumentException(
-                        "Tarifa no hallada para " + type + ", " + laps + " laps"));
+                        "Tarifa no hallada para " + type + ", " + minutes + " min"));
     }
 }

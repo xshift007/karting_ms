@@ -9,5 +9,5 @@ import java.util.Optional;
 
 public interface TariffConfigRepository
         extends JpaRepository<TariffConfig,Long> {
-    Optional<TariffConfig> findByRateTypeAndLaps(RateType rateType, int laps);
+    Optional<TariffConfig> findByRateAndMinutes(RateType rate, int minutes);
 }

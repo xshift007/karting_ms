@@ -30,7 +30,7 @@ public class PricingService {
 
         TariffConfig cfg = tariffService.forDate(dto.sessionDate(), dto.laps());
 
-        double base = cfg.getBasePrice();
+        double base = cfg.getPrice();
         double groupPct = disc.groupDiscount(dto.participants());
 
         int visits = web.get()
