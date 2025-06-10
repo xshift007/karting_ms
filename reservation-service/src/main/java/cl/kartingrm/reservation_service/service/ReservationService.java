@@ -38,8 +38,8 @@ public class ReservationService {
                 .retry(3)
                 .block();
 
-        web.put()
-                .uri(SESSION_URL + "/api/sessions/{id}/register?n={n}", req.sessionId(), req.participants())
+        web.post()
+                .uri(SESSION_URL + "/api/sessions/{id}/register?seats={n}", req.sessionId(), req.participants())
                 .retrieve()
                 .toBodilessEntity()
                 .retry(3)

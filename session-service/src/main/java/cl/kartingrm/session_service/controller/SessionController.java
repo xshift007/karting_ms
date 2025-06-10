@@ -34,9 +34,9 @@ public class SessionController {
     }
 
     /** Registro de participantes tras crear una reserva */
-    @PutMapping("/{id}/register")
-    public void add(@PathVariable Long id, @RequestParam int n){
-        s.register(id,n);
+    @PostMapping("/{id}/register")
+    public void register(@PathVariable Long id, @RequestParam int seats){
+        s.register(id,seats);
     }
 
     /** Disponibilidad semanal usada por el frontend */

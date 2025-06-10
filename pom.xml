@@ -33,6 +33,8 @@
         <module>pricing-service</module>
         <module>reservation-service</module>
         <module>session-service</module>
+        <module>payment-service</module>
+        <module>report-service</module>
     </modules>
 
     <dependencyManagement>

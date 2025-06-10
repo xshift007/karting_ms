@@ -9,7 +9,7 @@ spec:
       containers:
       - name: client
         image: myrepo/client-service:1.0
-        envFrom: [{secretRef:{name: db-cred}}]
+        envFrom: [{secretRef:{name: db-credentials}}]
         env:
         - {name: SPRING_CONFIG_IMPORT, value: "configserver:http://config:8888"}
         ports:
