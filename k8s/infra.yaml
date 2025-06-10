@@ -11,13 +11,17 @@ spec:
       - name: config-repo
         configMap: {name: config-repo}
       containers:
-      - name: config
-        image: myrepo/config-server:1.0
+      - name: config-server
+        image: config-server:latest
         ports:
         - {containerPort: 8888}
         - {containerPort: 9090}
+        envFrom:
+        - secretRef:
+            name: db-credentials
         env:
         - {name: SPRING_PROFILES_ACTIVE, value: "native"}
+        - {name: SPRING_CLOUD_CONFIG_SERVER_NATIVE_SEARCH_LOCATIONS, value: "file:/config-repo"}
         volumeMounts:
         - {name: config-repo, mountPath: /config-repo}
         readinessProbe:
@@ -71,7 +75,7 @@ spec:
       containers:
       - name: gateway
         image: myrepo/gateway-service:1.0
-        envFrom: [{secretRef:{name: db-cred}}]
+        envFrom: [{secretRef:{name: db-credentials}}]
         env:
         - {name: SPRING_CONFIG_IMPORT, value: "configserver:http://config:8888"}
         ports:
