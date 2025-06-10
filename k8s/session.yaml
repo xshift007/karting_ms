@@ -8,7 +8,8 @@ spec:
     spec:
       containers:
       - name: session
-        image: myrepo/session-service:1.0
+        image: session-service:latest
+        imagePullPolicy: Never
         envFrom: [{secretRef:{name: db-credentials}}]
         env:
         - {name: SPRING_CONFIG_IMPORT, value: "configserver:http://config:8888"}

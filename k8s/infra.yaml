@@ -13,12 +13,10 @@ spec:
       containers:
       - name: config-server
         image: config-server:latest
+        imagePullPolicy: Never
         ports:
         - {containerPort: 8888}
         - {containerPort: 9090}
-        envFrom:
-        - secretRef:
-            name: db-credentials
         env:
         - {name: SPRING_PROFILES_ACTIVE, value: "native"}
         - {name: SPRING_CLOUD_CONFIG_SERVER_NATIVE_SEARCH_LOCATIONS, value: "file:/config-repo"}
@@ -47,7 +45,8 @@ spec:
     spec:
       containers:
       - name: discovery
-        image: myrepo/discovery-server:1.0
+        image: discovery-server:latest
+        imagePullPolicy: Never
         ports:
         - {containerPort: 8761}
         - {containerPort: 9090}
@@ -74,7 +73,8 @@ spec:
     spec:
       containers:
       - name: gateway
-        image: myrepo/gateway-service:1.0
+        image: gateway-service:latest
+        imagePullPolicy: Never
         envFrom: [{secretRef:{name: db-credentials}}]
         env:
         - {name: SPRING_CONFIG_IMPORT, value: "configserver:http://config:8888"}
