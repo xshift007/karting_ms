@@ -195,6 +195,10 @@ Para levantar rápidamente los servicios existe el archivo `docker-compose.yml` 
 docker compose up --build
 ```
 
+> El directorio `config-repo` se monta como volumen en el Config Server. Cualquier
+> cambio en sus archivos se refleja al instante, por lo que no es necesario
+> reconstruir las imágenes a menos que modifiques el código.
+
 Revisa todos los servicios con:
 ```bash
 docker compose logs -f

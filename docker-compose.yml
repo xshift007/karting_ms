@@ -8,6 +8,8 @@ services:
     container_name: config
     volumes:
       - ./config-repo:/config-repo
+      # Configuration files are hot reloaded, so changes take effect
+      # immediately without rebuilding the image.
     ports:
       - "8888:8888"
     healthcheck:
