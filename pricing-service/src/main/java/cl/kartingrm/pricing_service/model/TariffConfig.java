@@ -7,7 +7,7 @@ import lombok.*;
 @Entity
 @Table(
         name = "tariff_config",
-        uniqueConstraints = @UniqueConstraint(columnNames = {"rate_type", "laps"})
+        uniqueConstraints = @UniqueConstraint(columnNames = {"rate_type", "minutes"})
 )
 @Getter
 @Setter
@@ -21,10 +21,12 @@ public class TariffConfig {
 
     /** WEEKDAY / WEEKEND / HOLIDAY */
     @Enumerated(EnumType.STRING)
-    @Column(name = "rate_type", length = 8, nullable = false)
-    private RateType rateType;
+    @Column(name = "rate_type", length = 10, nullable = false)
+    private RateType rate;
 
     private int laps;      // == minutes (simplificación)
     private int minutes;
-    private int basePrice; // CLP enteros
+
+    @Column(nullable = false)
+    private int price; // CLP enteros
 }

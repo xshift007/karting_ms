@@ -24,9 +24,9 @@ public class TariffController {
     public TariffConfig update(@PathVariable RateType rate,
                                @RequestBody TariffConfig body) {
 
-        TariffConfig cfg = repo.findByRateTypeAndLaps(rate, body.getLaps())
+        TariffConfig cfg = repo.findByRateAndMinutes(rate, body.getMinutes())
                 .orElseThrow(() -> new NoSuchElementException("tarifa no encontrada"));
-        cfg.setBasePrice(body.getBasePrice());
+        cfg.setPrice(body.getPrice());
         cfg.setMinutes(body.getMinutes());
         return repo.save(cfg);
     }

@@ -30,8 +30,15 @@ export default function ReservationsList() {
     reservationService.list().then(r => setList(r.data))
 
   const cancel = id =>
-    reservationService.cancel(id).then(reload)
-      .catch(err => alert(err.response?.data?.message || err.message))
+    reservationService.cancel(id)
+      .then(reload)
+      .catch(err => {
+        if (err.response?.status === 409){
+          window.dispatchEvent(new CustomEvent('httpError',{
+            detail:'La reserva ya está pagada o cancelada.'
+          }))
+        }
+      })
 
   return (
     <Paper sx={{ p:2 }}>
