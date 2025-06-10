@@ -13,6 +13,7 @@ data:
     management.server.port=9090
     management.tracing.sampling.probability=1.0
     management.zipkin.tracing.endpoint=http://zipkin:9411/api/v2/spans
+    eureka.client.service-url.defaultZone=http://discovery:8761/eureka/
   discovery-service.properties: |
     server.port=8761
     spring.application.name=discovery-service
@@ -47,6 +48,16 @@ data:
     spring.cloud.gateway.routes[4].predicates[0]=Path=/api/tariffs/**
     spring.cloud.gateway.routes[4].filters[0]=StripPrefix=1
 
+    spring.cloud.gateway.routes[5].id=payment
+    spring.cloud.gateway.routes[5].uri=lb://PAYMENT-SERVICE
+    spring.cloud.gateway.routes[5].predicates[0]=Path=/api/payments/**
+    spring.cloud.gateway.routes[5].filters[0]=StripPrefix=1
+
+    spring.cloud.gateway.routes[6].id=report
+    spring.cloud.gateway.routes[6].uri=lb://REPORT-SERVICE
+    spring.cloud.gateway.routes[6].predicates[0]=Path=/api/reports/**
+    spring.cloud.gateway.routes[6].filters[0]=StripPrefix=1
+
     eureka.client.service-url.defaultZone=http://discovery:8761/eureka/
     management.endpoints.web.exposure.include=health,info,prometheus,gateway
     management.metrics.tags.application=${spring.application.name}
@@ -69,6 +80,7 @@ data:
     management.server.port=9090
     management.tracing.sampling.probability=1.0
     management.zipkin.tracing.endpoint=http://zipkin:9411/api/v2/spans
+    eureka.client.service-url.defaultZone=http://discovery:8761/eureka/
   reservation-service.properties: |
     server.port=8080
     spring.datasource.url=jdbc:mysql://reservation-db:3306/reservationdb?createDatabaseIfNotExist=true&serverTimezone=UTC&allowPublicKeyRetrieval=true
@@ -84,6 +96,7 @@ data:
     management.server.port=9090
     management.tracing.sampling.probability=1.0
     management.zipkin.tracing.endpoint=http://zipkin:9411/api/v2/spans
+    eureka.client.service-url.defaultZone=http://discovery:8761/eureka/
   session-service.properties: |
     spring.datasource.url=jdbc:mysql://session-db:3306/sessiondb?createDatabaseIfNotExist=true&serverTimezone=UTC&allowPublicKeyRetrieval=true
     spring.datasource.username=${DB_USERNAME}
