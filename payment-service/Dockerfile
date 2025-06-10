@@ -12,6 +12,7 @@ COPY pricing-service/pom.xml       pricing-service/
 COPY reservation-service/pom.xml   reservation-service/
 COPY session-service/pom.xml       session-service/
 COPY payment-service/pom.xml       payment-service/
+COPY report-service/pom.xml        report-service/
 
 RUN --mount=type=cache,target=/root/.m2,sharing=locked \
     mvn -B -q dependency:go-offline
