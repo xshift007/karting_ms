@@ -10,4 +10,7 @@ scrape_configs:
           - 'gateway:9090'
           - 'config:9090'
           - 'discovery:9090'
+# When deploying Prometheus inside a Kubernetes cluster, replace the
+# static_configs above with an appropriate Service Discovery mechanism
+# (e.g. kubernetes_sd or file_sd).
 
