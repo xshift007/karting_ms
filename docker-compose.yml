@@ -17,6 +17,7 @@ services:
       interval: 10s
       timeout: 5s
       retries: 30
+      start_period: 40s
 
   discovery:
     build:
@@ -35,6 +36,7 @@ services:
       interval: 10s
       timeout: 5s
       retries: 30
+      start_period: 40s
 
   pricing-db:
     image: mysql:8.0.33
@@ -152,6 +154,7 @@ services:
       interval: 10s
       timeout: 5s
       retries: 30
+      start_period: 40s
 
   reservation:
     build:
@@ -182,6 +185,7 @@ services:
       interval: 10s
       timeout: 5s
       retries: 30
+      start_period: 40s
 
   client:
     build:
@@ -210,6 +214,7 @@ services:
       interval: 10s
       timeout: 5s
       retries: 30
+      start_period: 40s
 
   # microservicio sesiones
   session:
@@ -235,6 +240,7 @@ services:
       interval: 10s
       timeout: 5s
       retries: 30
+      start_period: 40s
 
   payment:
     build:
@@ -261,6 +267,7 @@ services:
       interval: 10s
       timeout: 5s
       retries: 30
+      start_period: 40s
 
   report:
     build:
@@ -287,6 +294,7 @@ services:
       interval: 10s
       timeout: 5s
       retries: 30
+      start_period: 40s
 
   gateway:
     build:
@@ -317,6 +325,7 @@ services:
       interval: 10s
       timeout: 5s
       retries: 30
+      start_period: 40s
 
   frontend:
     build: ./kartingrm-frontend
