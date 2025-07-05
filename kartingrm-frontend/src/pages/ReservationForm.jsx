@@ -125,12 +125,21 @@ export default function ReservationForm(){
 
   /* 6) calcular hora fin automática */
   useEffect(()=>{
-    if (!startTime || !rateType || !sessionDate) return
-    const mins = durMap[rateType] ?? 0
-    const end  = dayjs(`${sessionDate} ${startTime}`)
-                   .add(mins,'minute').format('HH:mm')
-    setValue('endTime', end, { shouldValidate:true, shouldDirty:true })
-  },[startTime, rateType, sessionDate, durMap, setValue])
+    if(!startTime || !rateType) return
+    if(!sessionDate) return
+    const fetchMinutes = async () => {
+      try{
+        const data = await tariffSvc.list()
+        const row = data.find(r => r.rate === rateType)
+        if(row){
+          const newEnd = dayjs(`${sessionDate} ${startTime}`)
+                           .add(row.minutes,'minute').format('HH:mm')
+          setValue('endTime', newEnd, { shouldValidate:true, shouldDirty:true })
+        }
+      }catch(e){ /* silencio */ }
+    }
+    fetchMinutes()
+  },[startTime, rateType, sessionDate, setValue])
 
   /* ---------- envío ---------- */
   const onSubmit = data => {
